@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>ARCH BSS COMMUNITY</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+ <body>
+  <!-- ログイン・新規登録画面 -->
+  <section class="auth-screen" id="auth-screen" hidden>
+    <div class="auth-card">
+      <img
+        src="images/arch-logo-new.png"
+        alt="ARCH BSS COMMUNITY"
+        class="auth-logo"
+      />
+
+      <div class="auth-heading">
+        <p class="page-label">WELCOME TO ARCH</p>
+        <h1 id="auth-title">ログイン</h1>
+
+        <p id="auth-description">
+          ARCHアカウントへログインしてください。
+        </p>
+      </div>
+
+      <form class="auth-form" id="auth-form">
+        <label class="auth-field">
+          <span>メールアドレス</span>
+
+          <input
+            type="email"
+            id="auth-email"
+            placeholder="example@email.com"
+            autocomplete="email"
+            required
+          />
+        </label>
+
+        <label class="auth-field">
+          <span>パスワード</span>
+
+          <input
+            type="password"
+            id="auth-password"
+            placeholder="6文字以上"
+            autocomplete="current-password"
+            minlength="6"
+            required
+          />
+        
+</label>
+
+<!-- 新規登録時だけ表示するプロフィール項目 -->
+<div id="signup-profile-fields" hidden>
+  <label class="auth-field">
+    <span>名前</span>
+
+    <input
+      type="text"
+      id="signup-name"
+      placeholder="例：鈴木 葵"
+      autocomplete="name"
+    />
+  </label>
+
+  <label class="auth-field">
+    <span>学校名</span>
+
+    <input
+      type="text"
+      id="signup-school"
+      placeholder="例：山野美容専門学校"
+    />
+  </label>
+
+  <label class="auth-field">
+    <span>学年</span>
+
+    <select id="signup-grade">
+      <option value="">学年を選択</option>
+      <option value="1年">1年</option>
+      <option value="2年">2年</option>
+      <option value="3年">3年</option>
+      <option value="卒業生">卒業生</option>
+      <option value="その他">その他</option>
+    </select>
+  </label>
+</div>
+
+<p class="auth-message" id="auth-message"></p>
+      
+
+        <button
+          type="submit"
+          class="main-button"
+          id="auth-submit-button"
+        >
+          ログイン
+        </button>
+      </form>
+
+      <button
+        type="button"
+        class="auth-switch-button"
+        id="auth-switch-button"
+      >
+        アカウントをお持ちでない方はこちら
+      </button>
+    </div>
+  </section>
+
+  <div class="app" id="app">
+      <!-- ホーム画面 -->
+<main
+  class="main-content page active-page"
+  id="home-page"
+>
+  <!-- ホーム画面で使用する線画アイコン -->
+  <svg
+    width="0"
+    height="0"
+    aria-hidden="true"
+    style="position: absolute"
+  >
+    <defs>
+      <!-- きらめき -->
+      <symbol id="icon-sparkles" viewBox="0 0 24 24">
+        <path d="M12 3l1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3z"></path>
+        <path d="M18.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"></path>
+        <path d="M5 13l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z"></path>
+      </symbol>
+
+      <!-- クラウン -->
+      <symbol id="icon-crown" viewBox="0 0 24 24">
+        <path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5L3 7z"></path>
+        <path d="M6 21h12"></path>
+      </symbol>
+
+      <!-- カメラ -->
+      <symbol id="icon-camera" viewBox="0 0 24 24">
+        <path d="M4 7h4l1.5-2h5L16 7h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
+        <circle cx="12" cy="13" r="4"></circle>
+      </symbol>
+
+      <!-- カレンダー -->
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+        <path d="M8 3v4"></path>
+        <path d="M16 3v4"></path>
+        <path d="M3 10h18"></path>
+      </symbol>
+
+      <!-- 場所 -->
+      <symbol id="icon-location" viewBox="0 0 24 24">
+        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"></path>
+        <circle cx="12" cy="10" r="2.5"></circle>
+      </symbol>
+
+      <!-- メンバー -->
+      <symbol id="icon-users" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3"></circle>
+        <path d="M3.5 19c.5-3.3 2.5-5 5.5-5s5 1.7 5.5 5"></path>
+        <circle cx="17" cy="9" r="2.5"></circle>
+        <path d="M15.5 14.5c3.1-.5 5 1 5.5 4"></path>
+      </symbol>
+
+      <!-- お知らせ -->
+      <symbol id="icon-megaphone" viewBox="0 0 24 24">
+        <path d="M4 10v4"></path>
+        <path d="M4 10h4l9-5v14l-9-5H4a2 2 0 0 1 0-4z"></path>
+        <path d="M8 14l1.5 5h3"></path>
+        <path d="M20 9v6"></path>
+      </symbol>
+
+      <!-- ギフト -->
+      <symbol id="icon-gift" viewBox="0 0 24 24">
+        <rect x="3" y="9" width="18" height="12" rx="1"></rect>
+        <path d="M2 9h20"></path>
+        <path d="M12 9v12"></path>
+        <path d="M12 9H7.5A2.5 2.5 0 1 1 10 6.5L12 9z"></path>
+        <path d="M12 9h4.5A2.5 2.5 0 1 0 14 6.5L12 9z"></path>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ロゴ -->
+  <header class="logo-area">
+    <img
+      src="images/arch-logo-new.png"
+      alt="ARCH BSS COMMUNITY"
+      class="arch-logo"
+    />
+  </header>
+
+  <!-- あいさつ -->
+  <section class="welcome-card">
+    <div>
+      <h1 class="welcome-title">
+        <svg
+          class="heading-line-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <use href="#icon-sparkles"></use>
+        </svg>
+
+        こんにちは！
+      </h1>
+
+      <p>今日も美容を楽しもう。</p>
+
+      <p>ARCHでつながり、学び、成長しよう。</p>
+    </div>
+
+    <div class="welcome-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <use href="#icon-crown"></use>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 次回イベント -->
+  <section class="section">
+    <div class="section-heading">
+      <h2>次回のイベント</h2>
+
+      <button
+        type="button"
+        class="text-button page-link"
+        data-target-page="events-page"
+      >
+        すべて見る ›
+      </button>
+    </div>
+
+    <article class="event-card">
+      <div class="event-image">
+        <span class="event-image-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-camera"></use>
+          </svg>
+        </span>
+
+        <p>イベント画像</p>
+      </div>
+
+      <div class="event-content">
+        <span class="event-label">開催予定</span>
+
+        <h3>作品撮り交流会</h3>
+
+        <p class="icon-text">
+          <span class="inline-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <use href="#icon-calendar"></use>
+            </svg>
+          </span>
+
+          <span>12月20日（土）13:00〜17:00</span>
+        </p>
+
+        <p class="icon-text">
+          <span class="inline-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <use href="#icon-location"></use>
+            </svg>
+          </span>
+
+          <span>東京都渋谷区神宮前</span>
+        </p>
+
+        <p class="icon-text">
+          <span class="inline-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <use href="#icon-users"></use>
+            </svg>
+          </span>
+
+          <span>23人が参加予定</span>
+        </p>
+
+        <button
+          type="button"
+          class="main-button page-link"
+          data-target-page="events-page"
+        >
+          詳細を見る ›
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <!-- お知らせ -->
+  <section class="section">
+    <div class="section-heading">
+      <h2>お知らせ</h2>
+
+      <button
+  type="button"
+  class="text-button page-link"
+  data-target-page="notices-page"
+>
+  すべて見る ›
+</button>
+    </div>
+
+    <div class="notice-card">
+      <button
+  type="button"
+  class="notice-item notice-detail-button"
+  data-notice-title="年末撮影会の参加者を募集中！"
+  data-notice-date="12月8日"
+  data-notice-category="イベント"
+  data-notice-body="12月に開催する作品撮り交流会の参加メンバーを募集しています。ヘア、メイク、モデルなど、得意な分野で参加できます。参加を希望する方はイベントページからお申し込みください。"
+>
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-megaphone"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            年末撮影会の参加者を募集中！
+          </strong>
+
+          <small>12月8日</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <button
+  type="button"
+  class="notice-item notice-detail-button"
+  data-notice-title="1月の定例ミーティングについて"
+  data-notice-date="12月5日"
+  data-notice-category="コミュニティ"
+  data-notice-body="1月の定例ミーティングでは、今後のイベント予定とARCHの活動方針を共有します。初参加のメンバーも歓迎しています。詳しい時間と会場は後日お知らせします。"
+>
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-calendar"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            1月の定例ミーティングについて
+          </strong>
+
+          <small>12月5日</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <button
+  type="button"
+  class="notice-item notice-detail-button"
+  data-notice-title="サロン見学ツアーのお知らせ"
+  data-notice-date="12月3日"
+  data-notice-category="イベント"
+  data-notice-body="表参道の人気サロンを訪問する見学ツアーを開催します。現役美容師の仕事や就職活動について、直接話を聞けるイベントです。定員に達し次第、受付を終了します。"
+>
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-gift"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            サロン見学ツアーのお知らせ
+          </strong>
+
+          <small>12月3日</small>
+        </span>
+
+        <span>›</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- コミュニティ情報 -->
+  <section class="section">
+    <div class="section-heading">
+      <h2>コミュニティの今</h2>
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-users"></use>
+          </svg>
+        </span>
+
+        <strong>128</strong>
+        <p>メンバー数</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-calendar"></use>
+          </svg>
+        </span>
+
+        <strong>12</strong>
+        <p>今月のイベント</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-camera"></use>
+          </svg>
+        </span>
+
+        <strong>230</strong>
+        <p>投稿数</p>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-crown"></use>
+          </svg>
+        </span>
+
+        <strong>8</strong>
+        <p>運営メンバー</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+      <!-- イベント画面 -->
+      <main class="main-content page" id="events-page">
+        <!-- イベント画面のヘッダー -->
+        <header class="page-header">
+          <div>
+            <p class="page-label">ARCH COMMUNITY</p>
+
+            <h1>イベント</h1>
+
+            <p class="page-description">
+              撮影会や交流会など、ARCHの活動をチェックできます。
+            </p>
+          </div>
+        </header>
+
+        <!-- イベントの絞り込み -->
+        <section class="event-filter">
+          <button
+            type="button"
+            class="filter-button active-filter"
+            data-filter="all"
+          >
+            すべて
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="upcoming"
+          >
+            参加予定
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="finished"
+          >
+            開催終了
+          </button>
+        </section>
+
+        <!-- イベント一覧 -->
+        <section class="event-list">
+          <!-- 作品撮り交流会 -->
+          <article
+            class="event-list-card"
+            data-status="upcoming"
+          >
+            <div class="event-list-image">
+              <span>📷</span>
+              <p>作品撮り</p>
+            </div>
+
+            <div class="event-list-content">
+              <div class="event-list-top">
+                <span class="event-label">募集中</span>
+
+                <span class="event-list-date">
+                  12月20日
+                </span>
+              </div>
+
+              <h2>作品撮り交流会</h2>
+
+              <p class="event-list-description">
+                美容学生同士でチームを組み、作品撮りを行う交流イベントです。
+              </p>
+
+              <div class="event-list-information">
+                <p>🕐 13:00〜17:00</p>
+                <p>📍 東京都渋谷区神宮前</p>
+                <p>👥 23人が参加予定</p>
+              </div>
+
+             <button
+  type="button"
+  class="event-detail-button"
+  data-event-title="作品撮り交流会"
+  data-event-description="美容学生同士でチームを組み、作品撮りを行う交流イベントです。"
+  data-event-time="🕐 13:00〜17:00"
+  data-event-location="📍 東京都渋谷区神宮前"
+  data-event-people="👥 23人が参加予定"
+>
+  イベントを見る
+  <span>›</span>
+</button>
+            </div>
+          </article>
+
+          <!-- サロン見学ツアー -->
+          <article
+            class="event-list-card"
+            data-status="upcoming"
+          >
+            <div class="event-list-image salon-event">
+              <span>✂️</span>
+              <p>サロン見学</p>
+            </div>
+
+            <div class="event-list-content">
+              <div class="event-list-top">
+                <span class="event-label">募集中</span>
+
+                <span class="event-list-date">
+                  1月15日
+                </span>
+              </div>
+
+              <h2>人気サロン見学ツアー</h2>
+
+              <p class="event-list-description">
+                実際のサロンを訪問し、仕事や就職について話を聞けるイベントです。
+              </p>
+
+              <div class="event-list-information">
+                <p>🕐 11:00〜14:00</p>
+                <p>📍 東京都表参道</p>
+                <p>👥 定員20人</p>
+              </div>
+
+              <button
+  type="button"
+  class="event-detail-button"
+  data-event-title="人気サロン見学ツアー"
+  data-event-description="実際のサロンを訪問し、仕事や就職について話を聞けるイベントです。"
+  data-event-time="🕐 11:00〜14:00"
+  data-event-location="📍 東京都表参道"
+  data-event-people="👥 定員20人"
+>
+  イベントを見る
+  <span>›</span>
+</button>
+            </div>
+          </article>
+
+          <!-- 新年交流ミーティング -->
+          <article
+            class="event-list-card"
+            data-status="finished"
+          >
+            <div class="event-list-image meeting-event">
+              <span>☕</span>
+              <p>交流会</p>
+            </div>
+
+            <div class="event-list-content">
+              <div class="event-list-top">
+                <span class="event-label closed-label">
+                  受付終了
+                </span>
+
+                <span class="event-list-date">
+                  1月8日
+                </span>
+              </div>
+
+              <h2>新年交流ミーティング</h2>
+
+              <p class="event-list-description">
+                今年の活動内容を共有しながら、メンバー同士で交流します。
+              </p>
+
+              <div class="event-list-information">
+                <p>🕐 18:00〜20:00</p>
+                <p>📍 東京都新宿区</p>
+                <p>👥 30人参加</p>
+              </div>
+
+              <button
+  type="button"
+  class="event-detail-button"
+  data-event-title="新年交流ミーティング"
+  data-event-description="今年の活動内容を共有しながら、メンバー同士で交流します。"
+  data-event-time="🕐 18:00〜20:00"
+  data-event-location="📍 東京都新宿区"
+  data-event-people="👥 30人参加"
+>
+  イベントを見る
+  <span>›</span>
+</button>
+            </div>
+          </article>
+        </section>
+      </main>
+<!-- お知らせ一覧画面 -->
+<main class="main-content page" id="notices-page">
+  <!-- お知らせ画面ヘッダー -->
+  <header class="page-header">
+    <div>
+      <p class="page-label">ARCH NEWS</p>
+
+      <h1>お知らせ</h1>
+
+      <p class="page-description">
+        ARCHからの最新情報やイベント案内を確認できます。
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="text-button page-link"
+      data-target-page="home-page"
+    >
+      ← ホーム
+    </button>
+  </header>
+
+  <!-- お知らせ一覧 -->
+  <section class="section">
+    <div class="notice-card">
+      <!-- お知らせ1 -->
+      <button type="button" class="notice-item">
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-megaphone"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            年末撮影会の参加者を募集中！
+          </strong>
+
+          <small>12月8日・イベント</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <!-- お知らせ2 -->
+      <button type="button" class="notice-item">
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-calendar"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            1月の定例ミーティングについて
+          </strong>
+
+          <small>12月5日・コミュニティ</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <!-- お知らせ3 -->
+      <button type="button" class="notice-item">
+        <span class="notice-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#icon-gift"></use>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            サロン見学ツアーのお知らせ
+          </strong>
+
+          <small>12月3日・イベント</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <!-- お知らせ4 -->
+      <button
+  type="button"
+  class="notice-item notice-detail-button"
+  data-notice-title="ARCH新メンバー募集のお知らせ"
+  data-notice-date="11月28日"
+  data-notice-category="メンバー"
+  data-notice-body="ARCHでは、一緒に活動する美容学生メンバーを募集しています。学校や学年、得意分野は問いません。作品づくりや交流イベントに興味がある方の参加をお待ちしています。"
+>
+        <span class="notice-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="9" cy="8" r="3"></circle>
+
+            <path
+              d="M3.5 19c.5-3.3 2.5-5 5.5-5s5 1.7 5.5 5"
+            ></path>
+
+            <path d="M18 7v6"></path>
+            <path d="M15 10h6"></path>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            ARCH新メンバー募集のお知らせ
+          </strong>
+
+          <small>11月28日・メンバー</small>
+        </span>
+
+        <span>›</span>
+      </button>
+
+      <!-- お知らせ5 -->
+      <button
+  type="button"
+  class="notice-item notice-detail-button"
+  data-notice-title="作品投稿のルールを更新しました"
+  data-notice-date="11月25日"
+  data-notice-category="運営"
+  data-notice-body="作品を投稿するときの画像サイズや説明文、モデル掲載許可に関するルールを更新しました。投稿前に内容を確認し、他の人が写っている場合は必ず掲載許可を取ってください。"
+>
+        <span class="notice-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="4" y="4" width="16" height="16"></rect>
+            <path d="M8 9h8"></path>
+            <path d="M8 13h8"></path>
+            <path d="M8 17h5"></path>
+          </svg>
+        </span>
+
+        <span class="notice-text">
+          <strong>
+            作品投稿のルールを更新しました
+          </strong>
+
+          <small>11月25日・運営</small>
+        </span>
+
+        <span>›</span>
+      </button>
+    </div>
+  </section>
+</main>
+     <!-- メンバー画面 -->
+<main class="main-content page" id="members-page">
+  <!-- メンバー画面ヘッダー -->
+  <header class="page-header">
+    <div>
+      <p class="page-label">ARCH COMMUNITY</p>
+
+      <h1>メンバー</h1>
+
+      <p class="page-description">
+        ARCHで活動する美容学生を探して、つながることができます。
+      </p>
+    </div>
+  </header>
+
+  <!-- メンバー検索 -->
+  <section class="member-search-area">
+    <label class="member-search-box">
+      <span class="member-search-icon">⌕</span>
+
+      <input
+        type="search"
+        id="member-search"
+        placeholder="名前・学校・得意分野で検索"
+        autocomplete="off"
+      />
+    </label>
+  </section>
+  <!-- 分野の絞り込み -->
+  <section class="member-filter">
+    <button
+      type="button"
+      class="member-filter-button active-member-filter"
+      data-member-filter="all"
+    >
+      すべて
+    </button>
+
+    <button
+      type="button"
+      class="member-filter-button"
+      data-member-filter="hair"
+    >
+      ヘア
+    </button>
+
+    <button
+      type="button"
+      class="member-filter-button"
+      data-member-filter="makeup"
+    >
+      メイク
+    </button>
+
+    <button
+      type="button"
+      class="member-filter-button"
+      data-member-filter="nail"
+    >
+      ネイル
+    </button>
+  </section>
+
+  <!-- メンバー数 -->
+  <div class="member-list-heading">
+    <h2>ARCHメンバー</h2>
+    <span id="member-count">4人</span>
+  </div>
+
+  <!-- メンバー一覧 -->
+  <section class="member-list">
+    <!-- メンバー1 -->
+    <article
+      class="member-card"
+      data-category="hair"
+      data-search="佐藤美咲 東京美容専門学校 ヘアカラー ブリーチ"
+    >
+      <div class="member-avatar">
+        <span>美</span>
+      </div>
+
+      <div class="member-card-content">
+        <div class="member-card-top">
+          <div>
+            <h3>佐藤 美咲</h3>
+            <p>東京美容専門学校・2年</p>
+          </div>
+
+          <span class="member-role">メンバー</span>
+        </div>
+
+        <p class="member-bio">
+          ヘアカラーとブリーチデザインを中心に勉強しています。
+        </p>
+
+        <div class="member-tags">
+          <span>ヘアカラー</span>
+          <span>ブリーチ</span>
+        </div>
+
+        <button
+  type="button"
+  class="member-detail-button"
+  data-member-avatar="美"
+  data-member-name="佐藤 美咲"
+  data-member-school="東京美容専門学校・2年"
+  data-member-role="メンバー"
+  data-member-bio="ヘアカラーとブリーチデザインを中心に勉強しています。"
+  data-member-tags="ヘアカラー,ブリーチ"
+>
+  プロフィールを見る
+  <span>›</span>
+</button>
+      </div>
+    </article>
+
+    <!-- メンバー2 -->
+    <article
+      class="member-card"
+      data-category="hair"
+      data-search="田中蓮 国際文化理容美容専門学校 メンズカット パーマ"
+    >
+      <div class="member-avatar">
+        <span>蓮</span>
+      </div>
+
+      <div class="member-card-content">
+        <div class="member-card-top">
+          <div>
+            <h3>田中 蓮</h3>
+            <p>国際文化理容美容専門学校・1年</p>
+          </div>
+
+          <span class="member-role">メンバー</span>
+        </div>
+
+        <p class="member-bio">
+          メンズカットとパーマスタイルを練習しています。
+        </p>
+
+        <div class="member-tags">
+          <span>メンズカット</span>
+          <span>パーマ</span>
+        </div>
+
+        <button
+  type="button"
+  class="member-detail-button"
+  data-member-avatar="蓮"
+  data-member-name="田中 蓮"
+  data-member-school="国際文化理容美容専門学校・1年"
+  data-member-role="メンバー"
+  data-member-bio="メンズカットとパーマスタイルを練習しています。"
+  data-member-tags="メンズカット,パーマ"
+>
+  プロフィールを見る
+  <span>›</span>
+</button>
+      </div>
+    </article>
+
+    <!-- メンバー3 -->
+    <article
+      class="member-card"
+      data-category="makeup"
+      data-search="鈴木葵 山野美容専門学校 メイク 撮影"
+    >
+      <div class="member-avatar">
+        <span>葵</span>
+      </div>
+
+      <div class="member-card-content">
+        <div class="member-card-top">
+          <div>
+            <h3>鈴木 葵</h3>
+            <p>山野美容専門学校・2年</p>
+          </div>
+
+          <span class="member-role">運営</span>
+        </div>
+
+        <p class="member-bio">
+          撮影用メイクや作品づくりのディレクションが得意です。
+        </p>
+
+        <div class="member-tags">
+          <span>メイク</span>
+          <span>作品撮り</span>
+        </div>
+
+        <button
+  type="button"
+  class="member-detail-button"
+  data-member-avatar="葵"
+  data-member-name="鈴木 葵"
+  data-member-school="山野美容専門学校・2年"
+  data-member-role="運営"
+  data-member-bio="撮影用メイクや作品づくりのディレクションが得意です。"
+  data-member-tags="メイク,作品撮り"
+>
+  プロフィールを見る
+  <span>›</span>
+</button>
+      </div>
+    </article>
+
+    <!-- メンバー4 -->
+    <article
+      class="member-card"
+      data-category="nail"
+      data-search="山本海斗 日本美容専門学校 ネイル アート"
+    >
+      <div class="member-avatar">
+        <span>海</span>
+      </div>
+
+      <div class="member-card-content">
+        <div class="member-card-top">
+          <div>
+            <h3>山本 海斗</h3>
+            <p>日本美容専門学校・1年</p>
+          </div>
+
+          <span class="member-role">メンバー</span>
+        </div>
+
+        <p class="member-bio">
+          ネイルアートとファッションを組み合わせた作品を制作しています。
+        </p>
+
+        <div class="member-tags">
+          <span>ネイル</span>
+          <span>アート</span>
+        </div>
+
+        <button
+  type="button"
+  class="member-detail-button"
+  data-member-avatar="海"
+  data-member-name="山本 海斗"
+  data-member-school="日本美容専門学校・1年"
+  data-member-role="メンバー"
+  data-member-bio="ネイルアートとファッションを組み合わせた作品を制作しています。"
+  data-member-tags="ネイル,アート"
+>
+  プロフィールを見る
+  <span>›</span>
+</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- 検索結果がない場合 -->
+  <section class="member-empty" id="member-empty" hidden>
+    <div class="member-empty-icon">⌕</div>
+
+    <h2>メンバーが見つかりません</h2>
+
+    <p>検索する言葉や分野を変更してみてください。</p>
+  </section>
+</main>
+  
+
+    <!-- マイページ -->
+<main class="main-content page" id="profile-page">
+  <!-- マイページヘッダー -->
+  <header class="page-header">
+    <div>
+      <p class="page-label">MY ARCH</p>
+
+      <h1>マイページ</h1>
+
+      <p class="page-description">
+        プロフィールや活動履歴を確認できます。
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="profile-edit-button"
+      id="profile-edit-button"
+    >
+      編集
+    </button>
+  </header>
+
+  <!-- プロフィールカード -->
+  <section class="profile-card">
+    <div class="profile-cover"></div>
+
+    <div class="profile-main">
+      <div class="profile-avatar">
+  <span id="profile-avatar-initial">葵</span>
+</div>
+
+<div class="profile-name-area">
+  <div>
+    <h2 id="profile-display-name">鈴木 葵</h2>
+    <p id="profile-school-grade">
+      山野美容専門学校・2年
+    </p>
+  </div>
+
+ <span
+  class="profile-role"
+  id="profile-role"
+>
+  メンバー
+</span>
+</div>
+
+      <p class="profile-bio" id="profile-bio"></p>
+        撮影用メイクや作品づくりを中心に活動しています。
+        美容学生同士で刺激を与え合える企画を作っていきたいです。
+      </p>
+
+      <div class="profile-tags">
+        <span>メイク</span>
+        <span>作品撮り</span>
+        <span>ディレクション</span>
+      </div>
+
+      <button
+  type="button"
+  class="profile-edit-button"
+  id="profile-edit-button"
+>
+  プロフィールを編集
+</button>
+
+      <a
+        href="https://www.instagram.com/"
+        class="instagram-button"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Instagramを見る
+        <span>↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 活動データ -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <h2>活動データ</h2>
+    </div>
+
+    <div class="profile-stats">
+      <article class="profile-stat-card">
+        <span class="profile-stat-icon">📅</span>
+        <strong>8</strong>
+        <p>参加イベント</p>
+      </article>
+
+      <article class="profile-stat-card">
+        <span class="profile-stat-icon">📷</span>
+        <strong>12</strong>
+        <p>作品投稿</p>
+      </article>
+
+      <article class="profile-stat-card">
+        <span class="profile-stat-icon">♡</span>
+        <strong>46</strong>
+        <p>つながり</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 最近の作品 -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <h2>最近の作品</h2>
+
+      <button type="button" class="text-button">
+        すべて見る ›
+      </button>
+
+    </div>
+
+    <div class="portfolio-grid">
+      <article class="portfolio-item">
+        <div class="portfolio-placeholder">
+          <span>📷</span>
+          <p>MAKEUP</p>
+        </div>
+      </article>
+
+      <article class="portfolio-item">
+        <div class="portfolio-placeholder second-work">
+          <span>✂️</span>
+          <p>HAIR</p>
+        </div>
+      </article>
+
+      <article class="portfolio-item">
+        <div class="portfolio-placeholder third-work">
+          <span>♕</span>
+          <p>CREATIVE</p>
+        </div>
+      </article>
+
+      <button
+        type="button"
+        class="portfolio-add-button"
+        id="portfolio-add-button"
+      >
+        <span>＋</span>
+        <p>作品を追加</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- 参加予定 -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <h2>参加予定のイベント</h2>
+    </div>
+
+    <article class="profile-event-card">
+      <div class="profile-event-date">
+        <strong>20</strong>
+        <span>12月</span>
+      </div>
+
+      <div class="profile-event-content">
+        <span class="profile-event-label">参加予定</span>
+
+        <h3>作品撮り交流会</h3>
+
+        <p>13:00〜17:00・東京都渋谷区神宮前</p>
+      </div>
+
+      <span class="profile-event-arrow">›</span>
+    </article>
+  </section>
+
+  <!-- メニュー -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <h2>アカウント</h2>
+    </div>
+
+    <div class="profile-menu-card">
+      <button type="button" class="profile-menu-item">
+        <span class="profile-menu-icon">✎</span>
+
+        <span class="profile-menu-text">
+          <strong>プロフィールを編集</strong>
+          <small>名前、学校、自己紹介など</small>
+        </span>
+
+        <span class="profile-menu-arrow">›</span>
+      </button>
+
+      <button type="button" class="profile-menu-item">
+        <span class="profile-menu-icon">🔔</span>
+
+        <span class="profile-menu-text">
+          <strong>通知設定</strong>
+          <small>お知らせやイベント通知</small>
+        </span>
+
+        <span class="profile-menu-arrow">›</span>
+      </button>
+
+      <button type="button" class="profile-menu-item">
+        <span class="profile-menu-icon">⚙</span>
+
+        <span class="profile-menu-text">
+          <strong>アプリ設定</strong>
+          <small>公開範囲やアカウント管理</small>
+        </span>
+
+        <span class="profile-menu-arrow">›</span>
+      </button>
+    </div>
+  </section>
+</main>
+<!-- お知らせ詳細 -->
+<div class="notice-modal" id="notice-modal" hidden>
+  <div
+    class="notice-modal-background"
+    id="notice-modal-background"
+  ></div>
+
+  <section class="notice-modal-card">
+    <button
+      type="button"
+      class="notice-modal-close"
+      id="notice-modal-close"
+      aria-label="お知らせ詳細を閉じる"
+    >
+      ×
+    </button>
+
+    <div class="notice-modal-icon">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 10v4"></path>
+
+        <path
+          d="M4 10h4l9-5v14l-9-5H4a2 2 0 0 1 0-4z"
+        ></path>
+
+        <path d="M8 14l1.5 5h3"></path>
+      </svg>
+    </div>
+
+    <span
+      class="notice-modal-category"
+      id="notice-modal-category"
+    >
+      お知らせ
+    </span>
+
+    <h2 id="notice-modal-title">
+      お知らせのタイトル
+    </h2>
+
+    <p
+      class="notice-modal-date"
+      id="notice-modal-date"
+    >
+      公開日
+    </p>
+
+    <div
+      class="notice-modal-body"
+      id="notice-modal-body"
+    >
+      <p>
+        お知らせの本文が表示されます。
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="main-button"
+      id="notice-modal-close-button"
+    >
+      閉じる
+    </button>
+  </section>
+</div>
+<!-- イベント詳細 -->
+<div class="event-modal" id="event-modal" hidden>
+  <div class="event-modal-background" id="event-modal-background"></div>
+
+  <section class="event-modal-card">
+    <button
+      type="button"
+      class="event-modal-close"
+      id="event-modal-close"
+      aria-label="イベント詳細を閉じる"
+    >
+      ×
+    </button>
+
+    <div class="event-modal-icon">📅</div>
+
+    <span class="event-label">ARCH EVENT</span>
+
+    <h2 id="event-modal-title">イベント名</h2>
+
+    <p
+      class="event-modal-description"
+      id="event-modal-description"
+    >
+      イベントの説明が表示されます。
+    </p>
+
+    <div class="event-modal-information">
+      <p id="event-modal-time">🕐 開催時間</p>
+      <p id="event-modal-location">📍 開催場所</p>
+      <p id="event-modal-people">👥 参加人数</p>
+    </div>
+
+    <button
+  type="button"
+  class="main-button"
+  id="event-join-button"
+>
+  このイベントに参加する
+</button>
+  </section>
+</div>
+<!-- メンバー詳細 -->
+<div class="member-modal" id="member-modal" hidden>
+  <div
+    class="member-modal-background"
+    id="member-modal-background"
+  ></div>
+
+  <section class="member-modal-card">
+    <button
+      type="button"
+      class="member-modal-close"
+      id="member-modal-close"
+      aria-label="メンバー詳細を閉じる"
+    >
+      ×
+    </button>
+
+    <div class="member-modal-cover"></div>
+
+    <div class="member-modal-content">
+      <div class="member-modal-avatar">
+        <span id="member-modal-avatar">美</span>
+      </div>
+
+      <span
+        class="member-role"
+        id="member-modal-role"
+      >
+        メンバー
+      </span>
+
+      <h2 id="member-modal-name">メンバー名</h2>
+
+      <p
+        class="member-modal-school"
+        id="member-modal-school"
+      >
+        美容専門学校・学年
+      </p>
+
+      <p
+        class="member-modal-bio"
+        id="member-modal-bio"
+      >
+        自己紹介が表示されます。
+      </p>
+
+      <div
+        class="member-modal-tags"
+        id="member-modal-tags"
+      ></div>
+
+      <button
+        type="button"
+        class="main-button"
+        id="member-connect-button"
+      >
+        このメンバーとつながる
+      </button>
+    </div>
+  </section>
+</div>
+      <!-- 下部メニュー -->
+<nav class="bottom-navigation">
+  <button
+    type="button"
+    class="navigation-item active"
+    data-page="home-page"
+  >
+    <span class="navigation-icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 10.5 12 3l9 7.5"></path>
+        <path d="M5.5 9.5V21h13V9.5"></path>
+        <path d="M9.5 21v-6h5v6"></path>
+      </svg>
+    </span>
+
+    <small>ホーム</small>
+  </button>
+
+  <button
+    type="button"
+    class="navigation-item"
+    data-page="events-page"
+  >
+    <span class="navigation-icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect
+          x="3"
+          y="5"
+          width="18"
+          height="16"
+          rx="2"
+        ></rect>
+
+        <path d="M16 3v4"></path>
+        <path d="M8 3v4"></path>
+        <path d="M3 10h18"></path>
+        <path d="M8 14h2"></path>
+        <path d="M14 14h2"></path>
+        <path d="M8 17h2"></path>
+      </svg>
+    </span>
+
+    <small>イベント</small>
+  </button>
+
+  <button
+    type="button"
+    class="navigation-item"
+    data-page="members-page"
+  >
+    <span class="navigation-icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="9" cy="8" r="3"></circle>
+
+        <path
+          d="M3.5 19c.5-3.3 2.5-5 5.5-5s5 1.7 5.5 5"
+        ></path>
+
+        <circle cx="17" cy="9" r="2.5"></circle>
+
+        <path
+          d="M15.5 14.5c3.1-.5 5 1 5.5 4"
+        ></path>
+      </svg>
+    </span>
+
+    <small>メンバー</small>
+  </button>
+
+  <button
+    type="button"
+    class="navigation-item"
+    data-page="profile-page"
+  >
+    <span class="navigation-icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="8" r="4"></circle>
+
+        <path
+          d="M4.5 21c.5-4.5 3.1-7 7.5-7s7 2.5 7.5 7"
+        ></path>
+      </svg>
+    </span>
+
+    <small>マイページ</small>
+  </button>
+</nav>
+    </div>
+
+    <script type="module" src="/script.js"></script>
+    <!-- プロフィール編集モーダル -->
+<div
+  class="profile-edit-modal"
+  id="profile-edit-modal"
+  hidden
+>
+  <div
+    class="profile-edit-background"
+    id="profile-edit-background"
+  ></div>
+
+  <div class="profile-edit-card">
+    <button
+      type="button"
+      class="profile-edit-close"
+      id="profile-edit-close"
+      aria-label="閉じる"
+    >
+      ×
+    </button>
+
+    <p class="page-label">EDIT PROFILE</p>
+    <h2>プロフィールを編集</h2>
+
+    <form
+      class="profile-edit-form"
+      id="profile-edit-form"
+    >
+      <label class="profile-edit-field">
+        <span>名前</span>
+        <input
+          type="text"
+          id="profile-edit-name"
+          required
+        />
+      </label>
+
+      <label class="profile-edit-field">
+        <span>学校名</span>
+        <input
+          type="text"
+          id="profile-edit-school"
+          required
+        />
+      </label>
+
+      <label class="profile-edit-field">
+        <span>学年</span>
+        <select
+          id="profile-edit-grade"
+          required
+        >
+          <option value="">学年を選択</option>
+          <option value="1年">1年</option>
+          <option value="2年">2年</option>
+          <option value="3年">3年</option>
+          <option value="卒業生">卒業生</option>
+          <option value="その他">その他</option>
+        </select>
+      </label>
+
+      <label class="profile-edit-field">
+        <span>自己紹介</span>
+        <textarea
+          id="profile-edit-bio"
+          rows="5"
+          placeholder="活動内容や得意分野を入力してください"
+        ></textarea>
+      </label>
+
+      <p
+        class="profile-edit-message"
+        id="profile-edit-message"
+      ></p>
+
+      <button
+        type="submit"
+        class="main-button"
+      >
+        変更を保存する
+      </button>
+    </form>
+  </div>
+</div>
+
+  </body>
+</html>
