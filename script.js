@@ -12,8 +12,10 @@ import {
 } from "firebase/auth";
 
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   serverTimestamp
@@ -88,12 +90,12 @@ filterButtons.forEach((filterButton) => {
 // ========================================
 // メンバー検索・絞り込み
 // ========================================
-
+const memberList =document.getElementById("member-list");
 const memberSearchInput = document.getElementById("member-search");
 const memberFilterButtons = document.querySelectorAll(
   ".member-filter-button"
 );
-const memberCards = document.querySelectorAll(".member-card");
+
 const memberCount = document.getElementById("member-count");
 const memberEmpty = document.getElementById("member-empty");
 
@@ -101,6 +103,8 @@ let selectedMemberCategory = "all";
 
 // メンバーの表示状態を更新する
 function updateMemberList() {
+const memberCards =
+  memberList?.querySelectorAll(".member-card") ?? [];
   const searchWord =
     memberSearchInput?.value.trim().toLowerCase() ?? "";
 
@@ -122,7 +126,18 @@ function updateMemberList() {
 
     const shouldShow = matchesCategory && matchesSearch;
 
-    memberCard.hidden = !shouldShow;
+  if (shouldShow) {
+  memberCard.hidden = false;
+  memberCard.style.removeProperty("display");
+} else {
+  memberCard.hidden = true;
+
+  memberCard.style.setProperty(
+    "display",
+    "none",
+    "important"
+  );
+}
 
     if (shouldShow) {
       visibleCount += 1;
@@ -137,7 +152,225 @@ function updateMemberList() {
     memberEmpty.hidden = visibleCount !== 0;
   }
 }
+// プロフィール情報からカテゴリーを判定する
+function getMemberCategory(profile) {
+  const tags = Array.isArray(profile.tags)
+    ? profile.tags
+    : [];
 
+  const memberText = [
+    ...tags,
+    profile.bio || ""
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    memberText.includes("ネイル") ||
+    memberText.includes("nail")
+  ) {
+    return "nail";
+  }
+
+  if (
+    memberText.includes("メイク") ||
+    memberText.includes("makeup")
+  ) {
+    return "makeup";
+  }
+
+  if (
+    memberText.includes("ヘア") ||
+    memberText.includes("カラー") ||
+    memberText.includes("ブリーチ") ||
+    memberText.includes("hair")
+  ) {
+    return "hair";
+  }
+
+  return "all";
+}
+
+// Firestoreのプロフィールからカードを作成する
+function createMemberCard(profile) {
+  const name =
+    profile.name?.trim() || "名前未設定";
+
+  const school =
+    profile.school?.trim() || "学校未設定";
+
+  const grade =
+    profile.grade?.trim() || "学年未設定";
+
+  const bio =
+    profile.bio?.trim() ||
+    "自己紹介文はまだ設定されていません。";
+
+  const tags = Array.isArray(profile.tags)
+    ? profile.tags
+        .map((tag) => String(tag).trim())
+        .filter((tag) => tag !== "")
+    : [];
+
+  const role =
+    profile.role === "member"
+      ? "メンバー"
+      : "運営メンバー";
+
+  const avatar =
+    name.slice(-1) || "?";
+
+  const category =
+    getMemberCategory(profile);
+
+  const memberCard =
+    document.createElement("article");
+
+  memberCard.className = "member-card";
+  memberCard.dataset.category = category;
+  memberCard.dataset.search = [
+    name,
+    school,
+    grade,
+    bio,
+    ...tags
+  ].join(" ");
+
+  memberCard.innerHTML = `
+    <div class="member-avatar">
+      <span></span>
+    </div>
+
+    <div class="member-card-content">
+      <div class="member-card-top">
+        <div>
+          <h3></h3>
+          <p></p>
+        </div>
+
+        <span class="member-role"></span>
+      </div>
+
+      <p class="member-bio"></p>
+
+      <div class="member-tags"></div>
+
+      <button
+        type="button"
+        class="member-detail-button"
+      >
+        プロフィールを見る
+        <span>›</span>
+      </button>
+    </div>
+  `;
+
+  memberCard.querySelector(
+    ".member-avatar span"
+  ).textContent = avatar;
+
+  memberCard.querySelector(
+    ".member-card-top h3"
+  ).textContent = name;
+
+  memberCard.querySelector(
+    ".member-card-top p"
+  ).textContent = `${school}・${grade}`;
+
+  memberCard.querySelector(
+    ".member-role"
+  ).textContent = role;
+
+  memberCard.querySelector(
+    ".member-bio"
+  ).textContent = bio;
+
+  const tagArea =
+    memberCard.querySelector(".member-tags");
+
+  tags.forEach((tag) => {
+    const tagElement =
+      document.createElement("span");
+
+    tagElement.textContent = tag;
+    tagArea.appendChild(tagElement);
+  });
+
+  const detailButton =
+    memberCard.querySelector(
+      ".member-detail-button"
+    );
+
+  detailButton.dataset.memberId =
+    profile.uid || "";
+
+  detailButton.dataset.memberAvatar =
+    avatar;
+
+  detailButton.dataset.memberName =
+    name;
+
+  detailButton.dataset.memberSchool =
+    `${school}・${grade}`;
+
+  detailButton.dataset.memberRole =
+    role;
+
+  detailButton.dataset.memberBio =
+    bio;
+
+  detailButton.dataset.memberTags =
+    tags.join(",");
+
+  return memberCard;
+}
+// Firestoreからメンバー一覧を読み込む
+async function loadMembers() {
+  if (!memberList) {
+    return;
+  }
+
+  try {
+    const usersSnapshot =
+      await getDocs(collection(db, "users"));
+
+    // HTMLに最初から入っている見本カードを削除
+    memberList
+      .querySelectorAll(".member-card")
+      .forEach((card) => {
+        card.remove();
+      });
+
+    usersSnapshot.forEach((userDocument) => {
+      const profile = userDocument.data();
+
+      const memberCard =
+        createMemberCard({
+          ...profile,
+          uid: userDocument.id
+        });
+
+      if (
+        memberEmpty &&
+        memberEmpty.parentElement === memberList
+      ) {
+        memberList.insertBefore(
+          memberCard,
+          memberEmpty
+        );
+      } else {
+        memberList.appendChild(memberCard);
+      }
+    });
+
+    updateMemberList();
+  } catch (error) {
+    console.error(
+      "メンバー一覧の読み込みに失敗しました:",
+      error
+    );
+  }
+}
 // 検索欄に文字を入力したとき
 memberSearchInput?.addEventListener("input", () => {
   updateMemberList();
@@ -505,11 +738,22 @@ function closeMemberModal() {
 }
 
 // 「プロフィールを見る」を押したとき
-memberDetailButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    openMemberModal(button);
-  });
+memberList?.addEventListener("click", (event) => {
+  const button = event.target.closest(
+    ".member-detail-button"
+  );
+
+  if (!button) {
+    return;
+  }
+
+  currentMemberName =
+    button.dataset.memberName ?? "";
+
+  openMemberModal(button);
+  updateConnectButton();
 });
+  
 
 // ×ボタンを押したとき
 memberModalClose?.addEventListener("click", () => {
@@ -604,15 +848,7 @@ function updateConnectButton() {
     : "このメンバーとつながる";
 }
 
-// メンバー詳細を開いたとき
-memberDetailButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    currentMemberName =
-      button.dataset.memberName ?? "";
 
-    updateConnectButton();
-  });
-});
 
 // つながる・解除する
 memberConnectButton?.addEventListener("click", () => {
@@ -891,6 +1127,9 @@ const profileInstagramLink =
   document.getElementById(
     "profile-instagram-link"
   );
+
+
+  
 
 const profileEditMessage =
   document.getElementById(
@@ -1416,6 +1655,7 @@ onAuthStateChanged(auth, async (user) => {
 
     try {
       await loadUserProfile(user);
+      await loadMembers();
     } catch (error) {
       console.error(
         "プロフィールの読み込みに失敗しました:",

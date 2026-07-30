@@ -2818,3 +2818,10 @@ body::before {
     border-radius: 26px;
   }
 }
+.member-card[hidden] {
+  display: none !important;
+}
+
+.member-empty[hidden] {
+  display: none !important;
+}
