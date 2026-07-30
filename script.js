@@ -882,6 +882,16 @@ const profileEditBio =
     "profile-edit-bio"
   );
 
+  const profileEditInstagram =
+  document.getElementById(
+    "profile-edit-instagram"
+  );
+
+const profileInstagramLink =
+  document.getElementById(
+    "profile-instagram-link"
+  );
+
 const profileEditMessage =
   document.getElementById(
     "profile-edit-message"
@@ -1145,6 +1155,74 @@ function openProfileEditModal() {
     return;
   }
 
+  // 現在の名前を編集欄に表示
+  if (profileEditName && profileDisplayName) {
+    profileEditName.value =
+      profileDisplayName.textContent.trim();
+  }
+
+  // 現在の学校名と学年を編集欄に表示
+  if (
+    profileEditSchool &&
+    profileEditGrade &&
+    profileSchoolGrade
+  ) {
+    const schoolGradeText =
+      profileSchoolGrade.textContent.trim();
+
+    const schoolGradeParts =
+      schoolGradeText.split("・");
+
+    const grade =
+      schoolGradeParts.pop() || "";
+
+    const school =
+      schoolGradeParts.join("・");
+
+    profileEditSchool.value = school;
+    profileEditGrade.value = grade;
+  }
+
+  // 現在の自己紹介文を編集欄に表示
+  if (profileEditBio && profileBio) {
+    const currentBio =
+      profileBio.textContent.trim();
+
+    profileEditBio.value =
+      currentBio ===
+      "自己紹介文はまだ設定されていません。"
+        ? ""
+        : currentBio;
+  }
+
+  // 現在のInstagramユーザー名を編集欄に表示
+  if (
+    profileEditInstagram &&
+    profileInstagramLink
+  ) {
+    const instagramHref =
+      profileInstagramLink.getAttribute("href") || "";
+
+    if (
+      instagramHref &&
+      instagramHref !== "https://www.instagram.com/"
+    ) {
+      try {
+        const instagramUrl =
+          new URL(instagramHref);
+
+        profileEditInstagram.value =
+          instagramUrl.pathname
+            .replaceAll("/", "")
+            .trim();
+      } catch {
+        profileEditInstagram.value = "";
+      }
+    } else {
+      profileEditInstagram.value = "";
+    }
+  }
+
   profileEditModal.hidden = false;
   document.body.classList.add("modal-open");
 }
@@ -1205,7 +1283,11 @@ profileEditForm?.addEventListener(
 
     const bio =
       profileEditBio?.value.trim() ?? "";
-
+const instagram =
+  profileEditInstagram?.value
+    .trim()
+    .replace(/^@/, "")
+    .replaceAll("/", "") ?? "";
     if (!name || !school || !grade) {
       if (profileEditMessage) {
         profileEditMessage.textContent =
@@ -1225,6 +1307,7 @@ profileEditForm?.addEventListener(
     school: school,
     grade: grade,
     bio: bio,
+    instagram: instagram,
     role: "member",
     updatedAt: serverTimestamp()
   },
@@ -1307,6 +1390,24 @@ if (profileBio) {
   profileBio.textContent =
     profile.bio?.trim() ||
     "自己紹介文はまだ設定されていません。";
+}
+
+if (profileInstagramLink) {
+  const instagram =
+    (profile.instagram || "")
+      .trim()
+      .replace(/^@/, "")
+      .replaceAll("/", "");
+
+  if (instagram) {
+    profileInstagramLink.href =
+      `https://www.instagram.com/${instagram}/`;
+
+    profileInstagramLink.style.display = "flex";
+  } else {
+    profileInstagramLink.removeAttribute("href");
+    profileInstagramLink.style.display = "none";
+  }
 }
 }
 onAuthStateChanged(auth, async (user) => {
