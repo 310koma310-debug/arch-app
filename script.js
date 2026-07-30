@@ -15,6 +15,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   serverTimestamp
 } from "firebase/firestore";
 
@@ -836,9 +837,9 @@ const profileSchoolGrade =
     "profile-bio"
   );
 
-  const profileEditButton =
-  document.getElementById(
-    "profile-edit-button"
+  const profileEditButtons =
+  document.querySelectorAll(
+    ".profile-edit-button"
   );
 
 const profileEditModal =
@@ -1161,10 +1162,12 @@ function closeProfileEditModal() {
   }
 }
 
-profileEditButton?.addEventListener(
-  "click",
-  openProfileEditModal
-);
+profileEditButtons.forEach((button) => {
+  button.addEventListener(
+    "click",
+    openProfileEditModal
+  );
+});
 
 profileEditClose?.addEventListener(
   "click",
@@ -1175,7 +1178,77 @@ profileEditBackground?.addEventListener(
   "click",
   closeProfileEditModal
 );
+profileEditForm?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
 
+    const user = auth.currentUser;
+
+    if (!user) {
+      if (profileEditMessage) {
+        profileEditMessage.textContent =
+          "ログイン情報が確認できません。";
+      }
+
+      return;
+    }
+
+    const name =
+      profileEditName?.value.trim() ?? "";
+
+    const school =
+      profileEditSchool?.value.trim() ?? "";
+
+    const grade =
+      profileEditGrade?.value ?? "";
+
+    const bio =
+      profileEditBio?.value.trim() ?? "";
+
+    if (!name || !school || !grade) {
+      if (profileEditMessage) {
+        profileEditMessage.textContent =
+          "名前・学校名・学年を入力してください。";
+      }
+
+      return;
+    }
+
+    try {
+     await setDoc(
+  doc(db, "users", user.uid),
+  {
+    uid: user.uid,
+    email: user.email,
+    name: name,
+    school: school,
+    grade: grade,
+    bio: bio,
+    role: "member",
+    updatedAt: serverTimestamp()
+  },
+  {
+    merge: true
+  }
+);
+
+      await loadUserProfile(user);
+
+      closeProfileEditModal();
+    } catch (error) {
+      console.error(
+        "プロフィール更新エラー:",
+        error
+      );
+
+      if (profileEditMessage) {
+        profileEditMessage.textContent =
+          "プロフィールを保存できませんでした。";
+      }
+    }
+  }
+);
 async function loadUserProfile(user) {
   if (!user) {
     return;

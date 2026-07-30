@@ -1073,7 +1073,7 @@
     <button
       type="button"
       class="profile-edit-button"
-      id="profile-edit-button"
+      
     >
       編集
     </button>
@@ -1104,10 +1104,9 @@
 </span>
 </div>
 
-      <p class="profile-bio" id="profile-bio"></p>
-        撮影用メイクや作品づくりを中心に活動しています。
-        美容学生同士で刺激を与え合える企画を作っていきたいです。
-      </p>
+      <p class="profile-bio" id="profile-bio">
+  自己紹介文はまだ設定されていません。
+</p>
 
       <div class="profile-tags">
         <span>メイク</span>
@@ -1627,7 +1626,15 @@
           <option value="その他">その他</option>
         </select>
       </label>
+<label class="profile-edit-field">
+  <span>自己紹介文</span>
 
+  <textarea
+    id="profile-edit-bio"
+    rows="5"
+    placeholder="活動内容や得意分野を入力してください"
+  ></textarea>
+</label>
       <label class="profile-edit-field">
         <span>自己紹介</span>
         <textarea
