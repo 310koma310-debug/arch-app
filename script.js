@@ -322,6 +322,8 @@ function createMemberCard(profile) {
   detailButton.dataset.memberTags =
     tags.join(",");
 
+  detailButton.dataset.memberInstagram =
+  profile.instagram?.trim() || "";
   return memberCard;
 }
 // Firestoreからメンバー一覧を読み込む
@@ -671,7 +673,10 @@ const memberModalBio = document.getElementById(
 const memberModalTags = document.getElementById(
   "member-modal-tags"
 );
-
+const memberModalInstagram =
+  document.getElementById(
+    "member-modal-instagram"
+  );
 // メンバー詳細を開く
 function openMemberModal(button) {
   if (!memberModal) {
@@ -720,6 +725,22 @@ function openMemberModal(button) {
       memberModalTags.appendChild(tagElement);
     });
   }
+if (memberModalInstagram) {
+  const instagram =
+    (button.dataset.memberInstagram || "")
+      .trim()
+      .replace(/^@/, "");
+
+  if (instagram) {
+    memberModalInstagram.href =
+      `https://www.instagram.com/${instagram}/`;
+
+    memberModalInstagram.style.display = "flex";
+  } else {
+    memberModalInstagram.removeAttribute("href");
+    memberModalInstagram.style.display = "none";
+  }
+}
 
   memberModal.removeAttribute("hidden");
   memberModal.style.display = "flex";
