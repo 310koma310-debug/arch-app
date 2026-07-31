@@ -12,14 +12,23 @@ import {
 } from "firebase/auth";
 
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
   setDoc,
   updateDoc,
+  query,
+  where,
   serverTimestamp
 } from "firebase/firestore";
+
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "firebase/storage";
 
 console.log("Firebase接続成功:", app.name);
 
@@ -323,7 +332,9 @@ function createMemberCard(profile) {
     tags.join(",");
 
   detailButton.dataset.memberInstagram =
-  profile.instagram?.trim() || "";
+  profile.isInstagramPublic === false
+    ? ""
+    : profile.instagram?.trim() || "";
   return memberCard;
 }
 // Firestoreからメンバー一覧を読み込む
@@ -345,6 +356,10 @@ async function loadMembers() {
 
     usersSnapshot.forEach((userDocument) => {
       const profile = userDocument.data();
+
+      if (profile.isProfilePublic === false) {
+  return;
+}
 
       const memberCard =
         createMemberCard({
@@ -1156,6 +1171,753 @@ const profileEditMessage =
   document.getElementById(
     "profile-edit-message"
   );
+  const notificationSettingsButton =
+  document.getElementById(
+    "notification-settings-button"
+  );
+
+const notificationSettingsModal =
+  document.getElementById(
+    "notification-settings-modal"
+  );
+
+const notificationSettingsBackground =
+  document.getElementById(
+    "notification-settings-background"
+  );
+
+const notificationSettingsClose =
+  document.getElementById(
+    "notification-settings-close"
+  );
+
+  const noticeNotificationToggle =
+  document.getElementById(
+    "notice-notification-toggle"
+  );
+
+const eventNotificationToggle =
+  document.getElementById(
+    "event-notification-toggle"
+  );
+
+const memberNotificationToggle =
+  document.getElementById(
+    "member-notification-toggle"
+  );
+  const appSettingsButton =
+  document.getElementById(
+    "app-settings-button"
+  );
+
+const appSettingsModal =
+  document.getElementById(
+    "app-settings-modal"
+  );
+
+const appSettingsBackground =
+  document.getElementById(
+    "app-settings-background"
+  );
+
+const appSettingsClose =
+  document.getElementById(
+    "app-settings-close"
+  );
+
+  const profilePublicToggle =
+  document.getElementById(
+    "profile-public-toggle"
+  );
+
+  const instagramPublicToggle =
+  document.getElementById(
+    "instagram-public-toggle"
+  );
+
+ function openNotificationSettings() {
+  if (!notificationSettingsModal) {
+    console.error(
+      "通知設定モーダルが見つかりません"
+    );
+
+    return;
+  }
+
+  notificationSettingsModal.removeAttribute(
+    "hidden"
+  );
+
+  notificationSettingsModal.style.display =
+    "flex";
+
+  document.body.classList.add(
+    "modal-open"
+  );
+}
+
+function closeNotificationSettings() {
+  if (!notificationSettingsModal) {
+    return;
+  }
+
+  notificationSettingsModal.setAttribute(
+    "hidden",
+    ""
+  );
+
+  notificationSettingsModal.style.display =
+    "none";
+
+  document.body.classList.remove(
+    "modal-open"
+  );
+}
+
+notificationSettingsButton?.addEventListener(
+  "click",
+  openNotificationSettings
+);
+
+notificationSettingsClose?.addEventListener(
+  "click",
+  closeNotificationSettings
+);
+
+notificationSettingsBackground?.addEventListener(
+  "click",
+  closeNotificationSettings
+);
+async function saveNotificationSetting(
+  toggle,
+  fieldName
+) {
+  const user = auth.currentUser;
+
+  if (!user || !toggle) {
+    return;
+  }
+
+  const newSetting = toggle.checked;
+  toggle.disabled = true;
+
+  try {
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        [fieldName]: newSetting,
+        updatedAt: serverTimestamp()
+      },
+      {
+        merge: true
+      }
+    );
+
+    console.log(
+      `${fieldName}を保存しました:`,
+      newSetting
+    );
+  } catch (error) {
+    console.error(
+      `${fieldName}の保存に失敗しました:`,
+      error
+    );
+
+    toggle.checked = !newSetting;
+  } finally {
+    toggle.disabled = false;
+  }
+}
+
+noticeNotificationToggle?.addEventListener(
+  "change",
+  () => {
+    saveNotificationSetting(
+      noticeNotificationToggle,
+      "noticeNotifications"
+    );
+  }
+);
+
+eventNotificationToggle?.addEventListener(
+  "change",
+  () => {
+    saveNotificationSetting(
+      eventNotificationToggle,
+      "eventNotifications"
+    );
+  }
+);
+
+memberNotificationToggle?.addEventListener(
+  "change",
+  () => {
+    saveNotificationSetting(
+      memberNotificationToggle,
+      "memberNotifications"
+    );
+  }
+);
+function openAppSettings() {
+  if (!appSettingsModal) {
+    console.error(
+      "アプリ設定モーダルが見つかりません"
+    );
+
+    return;
+  }
+
+  appSettingsModal.removeAttribute(
+    "hidden"
+  );
+
+  appSettingsModal.style.display =
+    "flex";
+
+  document.body.classList.add(
+    "modal-open"
+  );
+}
+
+function closeAppSettings() {
+  if (!appSettingsModal) {
+    return;
+  }
+
+  appSettingsModal.setAttribute(
+    "hidden",
+    ""
+  );
+
+  appSettingsModal.style.display =
+    "none";
+
+  document.body.classList.remove(
+    "modal-open"
+  );
+}
+
+appSettingsButton?.addEventListener(
+  "click",
+  openAppSettings
+);
+
+appSettingsClose?.addEventListener(
+  "click",
+  closeAppSettings
+);
+
+appSettingsBackground?.addEventListener(
+  "click",
+  closeAppSettings
+);
+profilePublicToggle?.addEventListener(
+  "change",
+  async () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      profilePublicToggle.checked =
+        !profilePublicToggle.checked;
+
+      return;
+    }
+
+    const newPublicSetting =
+      profilePublicToggle.checked;
+
+    profilePublicToggle.disabled = true;
+
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          isProfilePublic:
+            newPublicSetting,
+          updatedAt:
+            serverTimestamp()
+        },
+        {
+          merge: true
+        }
+      );
+
+      console.log(
+        "プロフィール公開設定を保存しました:",
+        newPublicSetting
+      );
+    } catch (error) {
+      console.error(
+        "プロフィール公開設定の保存に失敗しました:",
+        error
+      );
+
+      // 保存に失敗したら元の状態へ戻す
+      profilePublicToggle.checked =
+        !newPublicSetting;
+    } finally {
+      profilePublicToggle.disabled = false;
+    }
+  }
+);
+
+instagramPublicToggle?.addEventListener(
+  "change",
+  async () => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      instagramPublicToggle.checked =
+        !instagramPublicToggle.checked;
+
+      return;
+    }
+
+    const newInstagramSetting =
+      instagramPublicToggle.checked;
+
+    instagramPublicToggle.disabled = true;
+
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          isInstagramPublic:
+            newInstagramSetting,
+          updatedAt:
+            serverTimestamp()
+        },
+        {
+          merge: true
+        }
+      );
+
+      console.log(
+        "Instagram公開設定を保存しました:",
+        newInstagramSetting
+      );
+    } catch (error) {
+      console.error(
+        "Instagram公開設定の保存に失敗しました:",
+        error
+      );
+
+      instagramPublicToggle.checked =
+        !newInstagramSetting;
+    } finally {
+      instagramPublicToggle.disabled = false;
+    }
+  }
+);
+
+const portfolioGrid =
+  document.getElementById(
+    "portfolio-grid"
+  );
+const portfolioAddButton =
+  document.getElementById(
+    "portfolio-add-button"
+  );
+
+const portfolioUploadModal =
+  document.getElementById(
+    "portfolio-upload-modal"
+  );
+
+const portfolioUploadBackground =
+  document.getElementById(
+    "portfolio-upload-background"
+  );
+
+const portfolioUploadClose =
+  document.getElementById(
+    "portfolio-upload-close"
+  );
+
+const portfolioUploadForm =
+  document.getElementById(
+    "portfolio-upload-form"
+  );
+const portfolioImageButton =
+  document.getElementById(
+    "portfolio-image-button"
+  );
+const portfolioImage =
+  document.getElementById(
+    "portfolio-image"
+  );
+
+const portfolioImagePreview =
+  document.getElementById(
+    "portfolio-image-preview"
+  );
+
+const portfolioTitle =
+  document.getElementById(
+    "portfolio-title"
+  );
+
+const portfolioCategory =
+  document.getElementById(
+    "portfolio-category"
+  );
+
+const portfolioDescription =
+  document.getElementById(
+    "portfolio-description"
+  );
+
+const portfolioUploadMessage =
+  document.getElementById(
+    "portfolio-upload-message"
+  );
+
+const portfolioUploadSubmit =
+  document.getElementById(
+    "portfolio-upload-submit"
+  );
+  // Firestoreの作品データから画像カードを作る
+function createPortfolioItem(portfolio) {
+  const portfolioItem =
+    document.createElement("article");
+
+  portfolioItem.className =
+    "portfolio-item";
+
+  const portfolioImageElement =
+    document.createElement("img");
+
+  portfolioImageElement.className =
+    "portfolio-work-image";
+
+  portfolioImageElement.src =
+    portfolio.imageUrl || "";
+
+  portfolioImageElement.alt =
+    portfolio.title || "作品画像";
+
+  portfolioImageElement.loading =
+    "lazy";
+
+  portfolioItem.appendChild(
+    portfolioImageElement
+  );
+
+  return portfolioItem;
+}
+
+// ログイン中のユーザーの作品を読み込む
+async function loadUserPortfolios(user) {
+  if (
+    !user ||
+    !portfolioGrid ||
+    !portfolioAddButton
+  ) {
+    return;
+  }
+
+  try {
+    const portfoliosQuery =
+      query(
+        collection(db, "portfolios"),
+        where("userId", "==", user.uid)
+      );
+
+    const portfoliosSnapshot =
+      await getDocs(portfoliosQuery);
+
+    const portfolios =
+      portfoliosSnapshot.docs
+        .map((portfolioDocument) => ({
+          id: portfolioDocument.id,
+          ...portfolioDocument.data()
+        }))
+        .sort((portfolioA, portfolioB) => {
+          const timeA =
+            portfolioA.createdAt
+              ?.toMillis?.() ?? 0;
+
+          const timeB =
+            portfolioB.createdAt
+              ?.toMillis?.() ?? 0;
+
+          return timeB - timeA;
+        });
+
+    // HTMLにある見本作品を削除
+    portfolioGrid
+      .querySelectorAll(
+        ".portfolio-item"
+      )
+      .forEach((portfolioItem) => {
+        portfolioItem.remove();
+      });
+
+    // 新しい順に3作品まで表示
+    portfolios
+      .slice(0, 3)
+      .forEach((portfolio) => {
+        const portfolioItem =
+          createPortfolioItem(
+            portfolio
+          );
+
+        portfolioGrid.insertBefore(
+          portfolioItem,
+          portfolioAddButton
+        );
+      });
+  } catch (error) {
+    console.error(
+      "作品一覧の読み込みに失敗しました:",
+      error
+    );
+  }
+}
+
+  function openPortfolioUploadModal() {
+  if (!portfolioUploadModal) {
+    return;
+  }
+
+  portfolioUploadModal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closePortfolioUploadModal() {
+  if (!portfolioUploadModal) {
+    return;
+  }
+
+  portfolioUploadModal.hidden = true;
+  document.body.classList.remove("modal-open");
+
+  if (portfolioUploadMessage) {
+    portfolioUploadMessage.textContent = "";
+  }
+}
+
+portfolioAddButton?.addEventListener(
+  "click",
+  openPortfolioUploadModal
+);
+
+portfolioUploadClose?.addEventListener(
+  "click",
+  closePortfolioUploadModal
+);
+
+portfolioUploadBackground?.addEventListener(
+  "click",
+  closePortfolioUploadModal
+);
+portfolioImageButton?.addEventListener(
+  "click",
+  () => {
+    if (!portfolioImage) {
+      return;
+    }
+
+    portfolioImage.click();
+  }
+);
+let portfolioPreviewUrl = "";
+
+portfolioImage?.addEventListener(
+  "change",
+  () => {
+    const selectedFile =
+      portfolioImage.files?.[0];
+
+    if (portfolioPreviewUrl) {
+      URL.revokeObjectURL(
+        portfolioPreviewUrl
+      );
+
+      portfolioPreviewUrl = "";
+    }
+
+    if (
+      !selectedFile ||
+      !portfolioImagePreview
+    ) {
+      if (portfolioImagePreview) {
+        portfolioImagePreview.hidden = true;
+        portfolioImagePreview.removeAttribute(
+          "src"
+        );
+      }
+
+      
+      return;
+    }
+
+    portfolioPreviewUrl =
+      URL.createObjectURL(selectedFile);
+
+    portfolioImagePreview.src =
+      portfolioPreviewUrl;
+
+    portfolioImagePreview.hidden = false;
+  }
+);
+
+portfolioUploadForm?.addEventListener(
+  "submit",
+  async (event) => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+    const selectedFile =
+      portfolioImage?.files?.[0];
+
+    const title =
+      portfolioTitle?.value.trim() ?? "";
+
+    const category =
+      portfolioCategory?.value ?? "";
+
+    const description =
+      portfolioDescription?.value.trim() ?? "";
+
+    if (!user) {
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "ログイン情報が確認できません。";
+      }
+
+      return;
+    }
+
+    if (!selectedFile) {
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "作品画像を選択してください。";
+      }
+
+      return;
+    }
+
+    if (!title || !category) {
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "作品タイトルと分野を入力してください。";
+      }
+
+      return;
+    }
+
+    if (!selectedFile.type.startsWith("image/")) {
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "画像ファイルを選択してください。";
+      }
+
+      return;
+    }
+
+    const maxFileSize =
+      10 * 1024 * 1024;
+
+    if (selectedFile.size > maxFileSize) {
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "画像サイズは10MB以下にしてください。";
+      }
+
+      return;
+    }
+
+    if (portfolioUploadSubmit) {
+      portfolioUploadSubmit.disabled = true;
+      portfolioUploadSubmit.textContent =
+        "投稿中...";
+    }
+
+    if (portfolioUploadMessage) {
+      portfolioUploadMessage.textContent = "";
+    }
+
+    try {
+      const safeFileName =
+        selectedFile.name.replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
+
+      const storagePath =
+        `portfolios/${user.uid}/${Date.now()}-${safeFileName}`;
+
+      const imageStorageRef =
+        ref(storage, storagePath);
+
+      await uploadBytes(
+        imageStorageRef,
+        selectedFile
+      );
+
+      const imageUrl =
+        await getDownloadURL(
+          imageStorageRef
+        );
+
+      await addDoc(
+        collection(db, "portfolios"),
+        {
+          userId: user.uid,
+          title: title,
+          category: category,
+          description: description,
+          imageUrl: imageUrl,
+          storagePath: storagePath,
+          createdAt: serverTimestamp()
+        }
+      );
+
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "作品を保存しました。";
+      }
+
+      portfolioUploadForm.reset();
+
+      if (portfolioPreviewUrl) {
+        URL.revokeObjectURL(
+          portfolioPreviewUrl
+        );
+
+        portfolioPreviewUrl = "";
+      }
+
+      if (portfolioImagePreview) {
+        portfolioImagePreview.hidden = true;
+        portfolioImagePreview.removeAttribute(
+          "src"
+        );
+      }
+
+      await loadUserPortfolios(user);
+      closePortfolioUploadModal();
+
+    } catch (error) {
+      console.error(
+        "作品の投稿に失敗しました:",
+        error
+      );
+
+      if (portfolioUploadMessage) {
+        portfolioUploadMessage.textContent =
+          "作品を保存できませんでした。";
+      }
+    } finally {
+      if (portfolioUploadSubmit) {
+        portfolioUploadSubmit.disabled = false;
+        portfolioUploadSubmit.textContent =
+          "作品を投稿する";
+      }
+    }
+  }
+);
 
 let isSignUpMode = false;
 
@@ -1615,6 +2377,29 @@ async function loadUserProfile(user) {
   }
 
   const profile = userSnapshot.data();
+if (noticeNotificationToggle) {
+  noticeNotificationToggle.checked =
+    profile.noticeNotifications !== false;
+}
+
+if (eventNotificationToggle) {
+  eventNotificationToggle.checked =
+    profile.eventNotifications !== false;
+}
+
+if (memberNotificationToggle) {
+  memberNotificationToggle.checked =
+    profile.memberNotifications !== false;
+}
+  if (profilePublicToggle) {
+  profilePublicToggle.checked =
+    profile.isProfilePublic !== false;
+}
+
+if (instagramPublicToggle) {
+  instagramPublicToggle.checked =
+    profile.isInstagramPublic !== false;
+}
 
   if (profileDisplayName) {
     profileDisplayName.textContent =
@@ -1659,7 +2444,11 @@ if (profileInstagramLink) {
       .replace(/^@/, "")
       .replaceAll("/", "");
 
-  if (instagram) {
+  const shouldShowInstagram =
+    profile.isInstagramPublic !== false &&
+    instagram !== "";
+
+  if (shouldShowInstagram) {
     profileInstagramLink.href =
       `https://www.instagram.com/${instagram}/`;
 
@@ -1677,6 +2466,7 @@ onAuthStateChanged(auth, async (user) => {
     try {
       await loadUserProfile(user);
       await loadMembers();
+      await loadUserPortfolios(user);
     } catch (error) {
       console.error(
         "プロフィールの読み込みに失敗しました:",

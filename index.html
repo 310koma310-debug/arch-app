@@ -996,7 +996,10 @@
 
     </div>
 
-    <div class="portfolio-grid">
+    <div
+  class="portfolio-grid"
+  id="portfolio-grid"
+>
       <article class="portfolio-item">
         <div class="portfolio-placeholder">
           <span>📷</span>
@@ -1071,32 +1074,194 @@
         <span class="profile-menu-arrow">›</span>
       </button>
 
-      <button type="button" class="profile-menu-item">
-        <span class="profile-menu-icon">🔔</span>
+      <button
+  type="button"
+  class="profile-menu-item"
+  id="notification-settings-button"
+>
+  <span class="profile-menu-icon">🔔</span>
 
-        <span class="profile-menu-text">
-          <strong>通知設定</strong>
-          <small>お知らせやイベント通知</small>
-        </span>
+  <span class="profile-menu-text">
+    <strong>通知設定</strong>
+    <small>お知らせやイベント通知</small>
+  </span>
 
-        <span class="profile-menu-arrow">›</span>
-      </button>
+  <span class="profile-menu-arrow">›</span>
+</button>
 
-      <button type="button" class="profile-menu-item">
-        <span class="profile-menu-icon">⚙</span>
+<button
+  type="button"
+  class="profile-menu-item"
+  id="app-settings-button"
+>
+  <span class="profile-menu-icon">⚙</span>
 
-        <span class="profile-menu-text">
-          <strong>アプリ設定</strong>
-          <small>公開範囲やアカウント管理</small>
-        </span>
+  <span class="profile-menu-text">
+    <strong>アプリ設定</strong>
+    <small>公開範囲やアカウント管理</small>
+  </span>
 
-        <span class="profile-menu-arrow">›</span>
-      </button>
+  <span class="profile-menu-arrow">›</span>
+</button>
     </div>
   </section>
 </main>
+<!-- 通知設定 -->
+<div
+  class="settings-modal"
+  id="notification-settings-modal"
+  hidden
+>
+  <div
+    class="settings-modal-background"
+    id="notification-settings-background"
+  ></div>
+
+  <section class="settings-modal-card">
+    <header class="settings-modal-header">
+      <div>
+        <p class="settings-modal-label">
+          SETTINGS
+        </p>
+
+        <h2>通知設定</h2>
+      </div>
+
+      <button
+        type="button"
+        class="settings-modal-close"
+        id="notification-settings-close"
+        aria-label="通知設定を閉じる"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="settings-list">
+      <label class="settings-item">
+        <span class="settings-item-text">
+          <strong>お知らせ通知</strong>
+          <small>
+            ARCHからのお知らせを受け取ります
+          </small>
+        </span>
+
+        <input
+          type="checkbox"
+          id="notice-notification-toggle"
+          checked
+        >
+      </label>
+
+      <label class="settings-item">
+        <span class="settings-item-text">
+          <strong>イベント通知</strong>
+          <small>
+            新しいイベントや開催前の通知を受け取ります
+          </small>
+        </span>
+
+        <input
+          type="checkbox"
+          id="event-notification-toggle"
+          checked
+        >
+      </label>
+
+      <label class="settings-item">
+        <span class="settings-item-text">
+          <strong>メンバー通知</strong>
+          <small>
+            メンバーに関する通知を受け取ります
+          </small>
+        </span>
+
+        <input
+          type="checkbox"
+          id="member-notification-toggle"
+          checked
+        >
+      </label>
+    </div>
+  </section>
+</div>
+<!-- 通知設定 -->
+<div id="notification-settings-modal">
+  ...
+</div>
+
+<!-- アプリ設定 -->
+<div
+  class="settings-modal"
+  id="app-settings-modal"
+  hidden
+>
+  <div
+    class="settings-modal-background"
+    id="app-settings-background"
+  ></div>
+
+  <section class="settings-modal-card">
+    <header class="settings-modal-header">
+      <div>
+        <p class="settings-modal-label">
+          SETTINGS
+        </p>
+
+        <h2>アプリ設定</h2>
+      </div>
+
+      <button
+        type="button"
+        class="settings-modal-close"
+        id="app-settings-close"
+        aria-label="アプリ設定を閉じる"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="settings-list">
+      <label class="settings-item">
+        <span class="settings-item-text">
+          <strong>メンバー一覧にプロフィールを表示する</strong>
+          <small>
+              オフにするとメンバー一覧に表示されなくなります
+          </small>
+        </span>
+
+        <input
+          type="checkbox"
+          id="profile-public-toggle"
+          checked
+        >
+      </label>
+
+      <label class="settings-item">
+  <span class="settings-item-text">
+    <strong>Instagramをプロフィールに表示する</strong>
+    <small>
+      オフにするとInstagramリンクを非表示にします
+    </small>
+  </span>
+
+  <input
+    type="checkbox"
+    id="instagram-public-toggle"
+    checked
+  >
+</label>
+     
+    </div>
+  </section>
+</div>
+
 <!-- お知らせ詳細 -->
-<div class="notice-modal" id="notice-modal" hidden>
+<div
+  class="notice-modal"
+  id="notice-modal"
+  hidden
+>
   <div
     class="notice-modal-background"
     id="notice-modal-background"
@@ -1498,6 +1663,122 @@
         class="main-button"
       >
         変更を保存する
+      </button>
+    </form>
+  </div>
+</div>
+<!-- 作品追加モーダル -->
+<div
+  class="profile-edit-modal"
+  id="portfolio-upload-modal"
+  hidden
+>
+  <div
+    class="profile-edit-background"
+    id="portfolio-upload-background"
+  ></div>
+
+  <div class="profile-edit-card">
+    <button
+      type="button"
+      class="profile-edit-close"
+      id="portfolio-upload-close"
+      aria-label="閉じる"
+    >
+      ×
+    </button>
+
+    <p class="page-label">ADD PORTFOLIO</p>
+    <h2>作品を追加</h2>
+
+    <form
+      class="profile-edit-form"
+      id="portfolio-upload-form"
+    >
+      <label class="profile-edit-field">
+        <span>作品画像</span>
+
+        <input
+          type="file"
+          id="portfolio-image"
+          accept="image/jpeg,image/png,image/webp"
+          required
+        />
+      </label>
+
+      <img
+        id="portfolio-image-preview"
+        alt="選択した作品画像"
+        hidden
+      />
+
+      <label class="profile-edit-field">
+        <span>作品タイトル</span>
+
+        <input
+          type="text"
+          id="portfolio-title"
+          placeholder="例：モードメイク作品"
+          maxlength="50"
+          required
+        />
+      </label>
+
+      <label class="profile-edit-field">
+        <span>分野</span>
+
+        <select
+          id="portfolio-category"
+          required
+        >
+          <option value="">
+            分野を選択
+          </option>
+
+          <option value="hair">
+            ヘア
+          </option>
+
+          <option value="makeup">
+            メイク
+          </option>
+
+          <option value="nail">
+            ネイル
+          </option>
+
+          <option value="creative">
+            クリエイティブ
+          </option>
+
+          <option value="other">
+            その他
+          </option>
+        </select>
+      </label>
+
+      <label class="profile-edit-field">
+        <span>作品説明</span>
+
+        <textarea
+          id="portfolio-description"
+          rows="4"
+          maxlength="300"
+          placeholder="作品のテーマやこだわりを入力"
+        ></textarea>
+      </label>
+
+      <p
+        class="profile-edit-message"
+        id="portfolio-upload-message"
+      ></p>
+
+      <button
+        type="submit"
+        class="main-button"
+        id="portfolio-upload-submit"
+      >
+        作品を投稿する
       </button>
     </form>
   </div>
