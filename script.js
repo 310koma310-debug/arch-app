@@ -106,6 +106,10 @@ const memberFilterButtons = document.querySelectorAll(
 );
 
 const memberCount = document.getElementById("member-count");
+const homeMemberCount =
+  document.getElementById(
+    "home-member-count"
+  );
 const memberEmpty = document.getElementById("member-empty");
 
 let selectedMemberCategory = "all";
@@ -346,7 +350,10 @@ async function loadMembers() {
   try {
     const usersSnapshot =
       await getDocs(collection(db, "users"));
-
+if (homeMemberCount) {
+  homeMemberCount.textContent =
+    String(usersSnapshot.size);
+}
     // HTMLに最初から入っている見本カードを削除
     memberList
       .querySelectorAll(".member-card")
@@ -688,6 +695,15 @@ const memberModalBio = document.getElementById(
 const memberModalTags = document.getElementById(
   "member-modal-tags"
 );
+const memberModalPortfolioGrid =
+  document.getElementById(
+    "member-modal-portfolio-grid"
+  );
+
+const memberModalPortfolioEmpty =
+  document.getElementById(
+    "member-modal-portfolio-empty"
+  );
 const memberModalInstagram =
   document.getElementById(
     "member-modal-instagram"
@@ -756,10 +772,89 @@ if (memberModalInstagram) {
     memberModalInstagram.style.display = "none";
   }
 }
-
+loadMemberPortfolios(
+  button.dataset.memberId || ""
+);
   memberModal.removeAttribute("hidden");
   memberModal.style.display = "flex";
   document.body.classList.add("modal-open");
+}
+
+// 選択したメンバーの作品を読み込む
+async function loadMemberPortfolios(memberId) {
+  if (
+    !memberId ||
+    !memberModalPortfolioGrid ||
+    !memberModalPortfolioEmpty
+  ) {
+    return;
+  }
+
+  memberModalPortfolioGrid.innerHTML = "";
+  memberModalPortfolioEmpty.hidden = true;
+
+  try {
+    const portfoliosQuery = query(
+      collection(db, "portfolios"),
+      where("userId", "==", memberId)
+    );
+
+    const portfoliosSnapshot =
+      await getDocs(portfoliosQuery);
+
+    const portfolios =
+      portfoliosSnapshot.docs
+        .map((portfolioDocument) => ({
+          id: portfolioDocument.id,
+          ...portfolioDocument.data()
+        }))
+        .sort((portfolioA, portfolioB) => {
+          const timeA =
+            portfolioA.createdAt?.toMillis?.() ?? 0;
+
+          const timeB =
+            portfolioB.createdAt?.toMillis?.() ?? 0;
+
+          return timeB - timeA;
+        });
+
+    if (portfolios.length === 0) {
+      memberModalPortfolioEmpty.textContent =
+        "まだ作品が投稿されていません。";
+
+      memberModalPortfolioEmpty.hidden = false;
+      return;
+    }
+
+    portfolios.forEach((portfolio) => {
+      const image =
+        document.createElement("img");
+
+      image.src = portfolio.imageUrl || "";
+
+      image.alt =
+        portfolio.title || "メンバーの作品";
+
+      image.loading = "lazy";
+
+      image.className =
+        "member-modal-portfolio-image";
+
+     memberModalPortfolioGrid.appendChild(
+  image
+);
+    });
+  } catch (error) {
+    console.error(
+      "メンバー作品の読み込みに失敗しました:",
+      error
+    );
+
+    memberModalPortfolioEmpty.textContent =
+      "作品を読み込めませんでした。";
+
+    memberModalPortfolioEmpty.hidden = false;
+  }
 }
 
 // メンバー詳細を閉じる
