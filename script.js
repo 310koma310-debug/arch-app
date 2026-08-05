@@ -250,9 +250,15 @@ function createMemberCard(profile) {
   ].join(" ");
 
   memberCard.innerHTML = `
-    <div class="member-avatar">
-      <span></span>
-    </div>
+   <div class="member-avatar">
+  <img
+    class="member-avatar-image"
+    alt=""
+    hidden
+  >
+
+  <span></span>
+</div>
 
     <div class="member-card-content">
       <div class="member-card-top">
@@ -278,9 +284,38 @@ function createMemberCard(profile) {
     </div>
   `;
 
+ const memberAvatarImage =
+  memberCard.querySelector(
+    ".member-avatar-image"
+  );
+
+const memberAvatarInitial =
   memberCard.querySelector(
     ".member-avatar span"
-  ).textContent = avatar;
+  );
+
+const memberProfileImageUrl =
+  profile.profileImageUrl?.trim() || "";
+
+if (
+  memberProfileImageUrl &&
+  memberAvatarImage
+) {
+  memberAvatarImage.src =
+    memberProfileImageUrl;
+
+  memberAvatarImage.alt =
+    `${name}さんのプロフィール画像`;
+
+  memberAvatarImage.hidden = false;
+
+  if (memberAvatarInitial) {
+    memberAvatarInitial.hidden = true;
+  }
+} else if (memberAvatarInitial) {
+  memberAvatarInitial.textContent = avatar;
+  memberAvatarInitial.hidden = false;
+}
 
   memberCard.querySelector(
     ".member-card-top h3"
@@ -319,6 +354,9 @@ function createMemberCard(profile) {
 
   detailButton.dataset.memberAvatar =
     avatar;
+
+detailButton.dataset.memberProfileImage =
+  profile.profileImageUrl?.trim() || "";
 
   detailButton.dataset.memberName =
     name;
@@ -671,7 +709,10 @@ const memberModalBackground = document.getElementById(
 const memberModalClose = document.getElementById(
   "member-modal-close"
 );
-
+const memberModalAvatarImage =
+  document.getElementById(
+    "member-modal-avatar-image"
+  );
 const memberModalAvatar = document.getElementById(
   "member-modal-avatar"
 );
@@ -714,10 +755,34 @@ function openMemberModal(button) {
     return;
   }
 
-  if (memberModalAvatar) {
+  if (
+  memberModalAvatarImage &&
+  memberModalAvatar
+) {
+  const profileImageUrl =
+    button.dataset.memberProfileImage || "";
+
+  if (profileImageUrl) {
+    memberModalAvatarImage.src =
+      profileImageUrl;
+
+    memberModalAvatarImage.alt =
+      `${button.dataset.memberName || "メンバー"}さんのプロフィール画像`;
+
+    memberModalAvatarImage.hidden = false;
+    memberModalAvatar.hidden = true;
+  } else {
+    memberModalAvatarImage.removeAttribute(
+      "src"
+    );
+
+    memberModalAvatarImage.hidden = true;
+    memberModalAvatar.hidden = false;
+
     memberModalAvatar.textContent =
       button.dataset.memberAvatar ?? "";
   }
+}
 
   if (memberModalRole) {
     memberModalRole.textContent =
@@ -1178,7 +1243,10 @@ const signupSchoolInput = document.getElementById(
 const signupGradeSelect = document.getElementById(
   "signup-grade"
 );
-
+const profileAvatarImage =
+  document.getElementById(
+    "profile-avatar-image"
+  );
 const profileAvatarInitial =
   document.getElementById(
     "profile-avatar-initial"
@@ -1228,7 +1296,20 @@ const profileEditForm =
   document.getElementById(
     "profile-edit-form"
   );
+const profileEditImage =
+  document.getElementById(
+    "profile-edit-image"
+  );
 
+const profileEditImageButton =
+  document.getElementById(
+    "profile-edit-image-button"
+  );
+
+const profileEditImagePreview =
+  document.getElementById(
+    "profile-edit-image-preview"
+  );
 const profileEditName =
   document.getElementById(
     "profile-edit-name"
@@ -2265,6 +2346,44 @@ if (
     updateAuthMode();
   }
 });
+profileEditImageButton?.addEventListener(
+  "click",
+  () => {
+    profileEditImage?.click();
+  }
+);
+let profileImagePreviewUrl = "";
+
+profileEditImage?.addEventListener(
+  "change",
+  () => {
+    const selectedFile =
+      profileEditImage.files?.[0];
+
+    if (profileImagePreviewUrl) {
+      URL.revokeObjectURL(
+        profileImagePreviewUrl
+      );
+
+      profileImagePreviewUrl = "";
+    }
+
+    if (
+      !selectedFile ||
+      !profileEditImagePreview
+    ) {
+      return;
+    }
+
+    profileImagePreviewUrl =
+      URL.createObjectURL(selectedFile);
+
+    profileEditImagePreview.src =
+      profileImagePreviewUrl;
+
+    profileEditImagePreview.hidden = false;
+  }
+);
 
 // ログイン状態を監視する
 function openProfileEditModal() {
@@ -2379,7 +2498,8 @@ profileEditForm?.addEventListener(
     event.preventDefault();
 
     const user = auth.currentUser;
-
+const selectedProfileImage =
+  profileEditImage?.files?.[0];
     if (!user) {
       if (profileEditMessage) {
         profileEditMessage.textContent =
@@ -2413,21 +2533,96 @@ const instagram =
 
       return;
     }
+if (
+  selectedProfileImage &&
+  !selectedProfileImage.type.startsWith(
+    "image/"
+  )
+) {
+  if (profileEditMessage) {
+    profileEditMessage.textContent =
+      "画像ファイルを選択してください。";
+  }
 
+  return;
+}
+
+const maxProfileImageSize =
+  5 * 1024 * 1024;
+
+if (
+  selectedProfileImage &&
+  selectedProfileImage.size >
+    maxProfileImageSize
+) {
+  if (profileEditMessage) {
+    profileEditMessage.textContent =
+      "プロフィール画像は5MB以下にしてください。";
+  }
+
+  return;
+}
     try {
-     await setDoc(
+  let profileImageUrl = null;
+  let profileImageStoragePath = null;
+
+  if (selectedProfileImage) {
+    const safeFileName =
+      selectedProfileImage.name.replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
+
+    profileImageStoragePath =
+      `profile-images/${user.uid}/${Date.now()}-${safeFileName}`;
+
+    const profileImageRef =
+      ref(
+        storage,
+        profileImageStoragePath
+      );
+
+    await uploadBytes(
+      profileImageRef,
+      selectedProfileImage,
+      {
+        contentType:
+          selectedProfileImage.type
+      }
+    );
+
+    profileImageUrl =
+      await getDownloadURL(
+        profileImageRef
+      );
+  }
+
+ const profileUpdateData = {
+  uid: user.uid,
+  email: user.email,
+  name: name,
+  school: school,
+  grade: grade,
+  bio: bio,
+  instagram: instagram,
+  role: "member",
+  updatedAt: serverTimestamp()
+};
+
+if (
+  profileImageUrl &&
+  profileImageStoragePath
+) {
+  profileUpdateData.profileImageUrl =
+    profileImageUrl;
+
+  profileUpdateData.profileImageStoragePath =
+    profileImageStoragePath;
+}
+
+await setDoc(
   doc(db, "users", user.uid),
-  {
-    uid: user.uid,
-    email: user.email,
-    name: name,
-    school: school,
-    grade: grade,
-    bio: bio,
-    instagram: instagram,
-    role: "member",
-    updatedAt: serverTimestamp()
-  },
+  profileUpdateData,
   {
     merge: true
   }
@@ -2512,12 +2707,33 @@ if (instagramPublicToggle) {
       `${school}・${grade}`;
   }
 
-  if (profileAvatarInitial) {
+  if (
+  profileAvatarImage &&
+  profileAvatarInitial
+) {
+  const profileImageUrl =
+    profile.profileImageUrl?.trim() || "";
+
+  if (profileImageUrl) {
+    profileAvatarImage.src =
+      profileImageUrl;
+
+    profileAvatarImage.hidden = false;
+    profileAvatarInitial.hidden = true;
+  } else {
+    profileAvatarImage.removeAttribute(
+      "src"
+    );
+
+    profileAvatarImage.hidden = true;
+    profileAvatarInitial.hidden = false;
+
     const name = profile.name || "";
 
     profileAvatarInitial.textContent =
       name.slice(-1) || "?";
   }
+}
 
   if (profileRole) {
   profileRole.textContent =

@@ -1663,7 +1663,36 @@ body.modal-open {
   gap: 8px;
   margin-bottom: 20px;
 }
+/* メンバー詳細の作品一覧 */
+.member-modal-portfolio {
+  margin-top: 24px;
+}
 
+.member-modal-portfolio h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.member-modal-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.member-modal-portfolio-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.member-modal-portfolio-empty {
+  margin: 8px 0 0;
+  color: #777777;
+  font-size: 14px;
+}
 .member-modal-tags span {
   padding: 7px 11px;
   border: 1px solid var(--border);
@@ -2953,4 +2982,25 @@ body::before {
 }
 .event-image {
   overflow: hidden;
+}
+
+/* マイページの作品画像をInstagram風の正方形にする */
+.portfolio-item {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.portfolio-work-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  object-fit: cover;
+  border-radius: 50%;
 }

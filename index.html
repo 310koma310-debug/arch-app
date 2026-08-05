@@ -954,7 +954,16 @@
 
     <div class="profile-main">
       <div class="profile-avatar">
-  <span id="profile-avatar-initial">葵</span>
+  <img
+    id="profile-avatar-image"
+    class="profile-avatar-image"
+    alt="プロフィール画像"
+    hidden
+  >
+
+  <span id="profile-avatar-initial">
+    葵
+  </span>
 </div>
 
 <div class="profile-name-area">
@@ -1442,8 +1451,17 @@
 
     <div class="member-modal-content">
       <div class="member-modal-avatar">
-        <span id="member-modal-avatar">美</span>
-      </div>
+  <img
+    id="member-modal-avatar-image"
+    class="member-modal-avatar-image"
+    alt="プロフィール画像"
+    hidden
+  >
+
+  <span id="member-modal-avatar">
+    美
+  </span>
+</div>
 
       <span
         class="member-role"
@@ -1655,6 +1673,33 @@
       class="profile-edit-form"
       id="profile-edit-form"
     >
+    <div class="profile-image-edit">
+  <img
+    id="profile-edit-image-preview"
+    class="profile-edit-image-preview"
+    alt="プロフィール画像のプレビュー"
+    hidden
+  >
+
+  <button
+    type="button"
+    class="profile-image-select-button"
+    id="profile-edit-image-button"
+  >
+    プロフィール画像を選ぶ
+  </button>
+
+  <input
+    type="file"
+    id="profile-edit-image"
+    accept="image/jpeg,image/png,image/webp"
+    hidden
+  >
+
+  <small>
+    JPG・PNG・WebP、5MB以下
+  </small>
+</div>
       <label class="profile-edit-field">
         <span>名前</span>
         <input
