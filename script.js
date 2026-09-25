@@ -1247,7 +1247,27 @@ const profileAvatarImage =
   document.getElementById(
     "profile-avatar-image"
   );
-const profileAvatarInitial =
+// ARCH PASS 会員証
+const passAvatarImage =
+  document.getElementById("pass-avatar-image");
+
+const passAvatarInitial =
+  document.getElementById("pass-avatar-initial");
+
+const passCardName =
+  document.getElementById("pass-card-name");
+
+const passCardSchoolGrade =
+  document.getElementById("pass-card-school-grade");
+// ARCH PASSの興味ジャンル
+const passCardGenre =
+  document.getElementById("pass-card-genre");
+  // ARCH PASSの会員番号
+const passCardMemberNumber =
+  document.getElementById(
+    "pass-card-member-number"
+  );
+  const profileAvatarInitial =
   document.getElementById(
     "profile-avatar-initial"
   );
@@ -1324,7 +1344,10 @@ const profileEditGrade =
   document.getElementById(
     "profile-edit-grade"
   );
-
+const profileEditGraduationYear =
+  document.getElementById(
+    "profile-edit-graduation-year"
+  );
 const profileEditBio =
   document.getElementById(
     "profile-edit-bio"
@@ -2386,10 +2409,41 @@ profileEditImage?.addEventListener(
 );
 
 // ログイン状態を監視する
-function openProfileEditModal() {
+async function openProfileEditModal() {
   if (!profileEditModal) {
     return;
   }
+
+  // 保存済みの卒業予定年度と興味ジャンルを取得
+const currentUser = auth.currentUser;
+
+if (currentUser) {
+  const userSnapshot = await getDoc(
+    doc(db, "users", currentUser.uid)
+  );
+
+  const userData = userSnapshot.exists()
+    ? userSnapshot.data()
+    : {};
+
+  // 卒業予定年度を表示
+  if (profileEditGraduationYear) {
+    profileEditGraduationYear.value =
+      userData.graduationYear || "";
+  }
+
+  // 保存済みの興味ジャンルにチェックを入れる
+  const savedGenres = Array.isArray(userData.genres)
+    ? userData.genres
+    : [];
+
+  document.querySelectorAll(
+    'input[name="profile-edit-genre"]'
+  ).forEach((checkbox) => {
+    checkbox.checked =
+      savedGenres.includes(checkbox.value);
+  });
+}
 
   // 現在の名前を編集欄に表示
   if (profileEditName && profileDisplayName) {
@@ -2418,6 +2472,8 @@ function openProfileEditModal() {
     profileEditSchool.value = school;
     profileEditGrade.value = grade;
   }
+
+
 
   // 現在の自己紹介文を編集欄に表示
   if (profileEditBio && profileBio) {
@@ -2597,12 +2653,25 @@ if (
       );
   }
 
+  // 選択された興味ジャンルを取得
+const selectedGenres = Array.from(
+  document.querySelectorAll(
+    'input[name="profile-edit-genre"]:checked'
+  )
+).map((checkbox) => checkbox.value);
+
  const profileUpdateData = {
   uid: user.uid,
   email: user.email,
   name: name,
   school: school,
   grade: grade,
+  graduationYear:
+  profileEditGraduationYear?.value?.trim() || "",
+
+   // 興味ジャンルを保存
+  genres: selectedGenres,
+
   bio: bio,
   instagram: instagram,
   role: "member",
@@ -2732,6 +2801,71 @@ if (instagramPublicToggle) {
 
     profileAvatarInitial.textContent =
       name.slice(-1) || "?";
+  }
+}
+
+// ARCH PASSにプロフィール情報を表示
+
+if (passCardName) {
+  passCardName.textContent =
+    profile.name || "名前未設定";
+}
+
+if (passCardSchoolGrade) {
+  passCardSchoolGrade.textContent =
+    [
+      profile.school,
+      profile.grade,
+      profile.graduationYear
+        ? `${profile.graduationYear}年度卒業予定`
+        : ""
+    ]
+      .filter(Boolean)
+      .join("・") || "学校・学年未設定";
+}
+
+// ARCH PASSに興味ジャンルを表示
+if (passCardGenre) {
+  const genres = Array.isArray(profile.genres)
+    ? profile.genres
+    : [];
+
+  passCardGenre.textContent =
+    genres.length > 0
+      ? `INTEREST : ${genres.join(" / ")}`
+      : "INTEREST : 未設定";
+}
+
+// ARCH PASSの会員番号を表示
+if (passCardMemberNumber) {
+  const memberUid =
+    auth.currentUser?.uid || profile.uid || "";
+
+  passCardMemberNumber.textContent =
+    memberUid
+      ? `ARCH-${memberUid.slice(0, 10).toUpperCase()}`
+      : "発行準備中";
+}
+
+if (
+  passAvatarImage &&
+  passAvatarInitial
+) {
+  const imageUrl =
+    profile.profileImageUrl?.trim() || "";
+
+  if (imageUrl) {
+    passAvatarImage.src = imageUrl;
+    passAvatarImage.hidden = false;
+    passAvatarInitial.hidden = true;
+  } else {
+    passAvatarImage.removeAttribute("src");
+    passAvatarImage.hidden = true;
+
+    passAvatarInitial.textContent =
+      (profile.name || "").slice(-1) || "?";
+
+    passAvatarInitial.hidden = false;
   }
 }
 

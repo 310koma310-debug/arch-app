@@ -3093,3 +3093,182 @@ body::before {
 .member-card .member-avatar-image[hidden] {
   display: none !important;
 }
+/* 下部ナビを5つ横一列に固定 */
+nav:has(> .navigation-item) {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  width: 100%;
+}
+
+nav:has(> .navigation-item) .navigation-item {
+  width: 100%;
+  min-width: 0;
+}
+.navigation-item span {
+  font-size: 12px !important;
+  line-height: 1.2;
+}
+/* ===== ARCH PASS 会員証 ===== */
+
+.pass-card-section {
+  padding: 20px 16px;
+}
+
+.pass-card {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 26px 24px;
+
+  background: linear-gradient(
+    135deg,
+    #dcecff 0%,
+    #b7d5f6 100%
+  );
+
+  border: 1px solid #a9c8ec;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(35, 75, 130, 0.12);
+
+  color: #17365f;
+}
+
+/* カード上部 */
+
+.pass-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pass-card-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.pass-card-top h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.pass-card-badge {
+  padding: 6px 12px;
+  border: 1px solid #17365f;
+  border-radius: 20px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+/* プロフィール */
+
+.pass-card-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 36px 0;
+}
+
+.pass-card-avatar {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  background: #fff;
+  overflow: hidden;
+
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.pass-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.pass-avatar-image[hidden],
+.pass-card-avatar span[hidden] {
+  display: none !important;
+}
+
+.pass-card-profile-text {
+  min-width: 0;
+}
+
+.pass-card-profile-text h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pass-card-profile-text p {
+  margin: 4px 0;
+  font-size: 11px;
+}
+
+/* カード下部 */
+
+.pass-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 54, 95, 0.25);
+}
+
+.pass-card-small-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.pass-card-bottom strong {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.pass-card-brand {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+/* 興味ジャンルのチェックボックス */
+
+.profile-edit-genres {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.profile-edit-genres label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.profile-edit-genres input[type="checkbox"] {
+  appearance: auto;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0 !important;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #437CC1;
+}
