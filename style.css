@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
 :root {
   --background: #f8f7f4;
   --card: #ffffff;
@@ -3271,4 +3272,416 @@ nav:has(> .navigation-item) .navigation-item {
   margin: 0;
   flex-shrink: 0;
   accent-color: #437CC1;
+}
+
+/* ===== MY ARCH 活動履歴 ===== */
+
+.my-arch-section {
+  padding: 24px 16px;
+}
+
+.my-arch-heading {
+  margin-bottom: 20px;
+}
+
+.my-arch-heading h2 {
+  margin: 4px 0 8px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #17365f;
+}
+
+.my-arch-heading > p:last-child {
+  font-size: 13px;
+  color: #718096;
+}
+
+.my-arch-activity-list {
+  display: grid;
+  gap: 12px;
+}
+
+.my-arch-activity-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+
+  background: #fff;
+  border: 1px solid #d8e6f5;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(35, 75, 130, 0.06);
+}
+
+.my-arch-activity-icon {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+
+  background: #dcecff;
+  border-radius: 14px;
+
+  color: #17365f;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.my-arch-activity-content {
+  min-width: 0;
+}
+
+.my-arch-activity-type {
+  margin: 0 0 5px;
+  color: #4b82bf;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.my-arch-activity-content h3 {
+  margin: 0 0 5px;
+  color: #17365f;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.my-arch-activity-date {
+  margin: 0;
+  color: #8191a5;
+  font-size: 12px;
+}
+
+/* ===== ARCH PASS SKY DESIGN ===== */
+
+.pass-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background: linear-gradient(
+    165deg,
+    #70b5ec 0%,
+    #a8d8f8 35%,
+    #d8eeff 68%,
+    #ffffff 100%
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    0 12px 32px rgba(62, 130, 190, 0.16);
+}
+
+/* 空に浮かぶ白い雲 */
+
+.pass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse 140px 35px at 12% 68%,
+      rgba(255,255,255,0.9) 60%,
+      transparent 75%
+    ),
+    radial-gradient(
+      ellipse 110px 45px at 35% 61%,
+      rgba(255,255,255,0.65) 60%,
+      transparent 75%
+    ),
+    radial-gradient(
+      ellipse 170px 40px at 90% 76%,
+      rgba(255,255,255,0.85) 60%,
+      transparent 75%
+    );
+
+  filter: blur(12px);
+}
+
+/* 雲の上に文字と写真を表示 */
+
+.pass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ARCH PASS 筆記体ロゴ */
+
+.pass-card-top h2 .pass-script {
+  font-family: "Allura", cursive;
+  font-size: 46px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-left: 5px;
+}
+
+/* ===== ARCH PASS CONCRETE DESIGN ===== */
+
+.pass-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  /* コンクリートの質感 */
+  background-color: #bfc2c3;
+
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(45, 48, 50, 0.13) 0.6px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 2px
+    ),
+    linear-gradient(
+      135deg,
+      #d4d6d6 0%,
+      #b8bbbd 45%,
+      #d0d1d0 100%
+    );
+
+  background-size:
+    9px 11px,
+    17px 19px,
+    100% 100%;
+
+  border: 1px solid #a4a8aa;
+  border-radius: 20px;
+
+  color: #25292c;
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.14);
+}
+
+/* 青空の雲を消し、コンクリートの色ムラに変更 */
+
+.pass-card::before {
+  background:
+    radial-gradient(
+      ellipse at 20% 25%,
+      rgba(255, 255, 255, 0.2),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 85% 75%,
+      rgba(60, 65, 68, 0.12),
+      transparent 55%
+    );
+
+  filter: none;
+}
+
+/* 文字色をコンクリートに合わせる */
+
+.pass-card-top h2,
+.pass-card-profile-text,
+.pass-card-bottom,
+.pass-card-brand {
+  color: #25292c;
+}
+
+.pass-card-badge {
+  color: #25292c;
+  border-color: #555b60;
+}
+
+.pass-card-bottom {
+  border-top-color: rgba(37, 41, 44, 0.3);
+}
+
+/* プロフィール写真の枠 */
+
+.pass-card-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: #e5e5e5;
+}
+
+/* ===== ARCH PASS / ROUGH INDUSTRIAL CONCRETE ===== */
+
+.pass-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #d5d5d3 0%,
+      #bebebb 18%,
+      #9f9f9c 38%,
+      #b5b5b1 58%,
+      #8e8e8b 78%,
+      #c8c8c4 100%
+    );
+
+  border: 1px solid #7f7f7b;
+  border-radius: 22px;
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+
+  color: #1f2224;
+}
+
+/* コンクリートの大きなムラ */
+.pass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 14% 18%,
+      rgba(255, 255, 255, 0.23) 0%,
+      rgba(255, 255, 255, 0.07) 18%,
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 82% 24%,
+      rgba(60, 60, 58, 0.18) 0%,
+      rgba(60, 60, 58, 0.08) 22%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 24% 78%,
+      rgba(40, 40, 39, 0.14) 0%,
+      rgba(40, 40, 39, 0.05) 16%,
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 88% 82%,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 15%,
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(0, 0, 0, 0.05) 100%
+    );
+
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+}
+
+/* 細かいざらつき */
+.pass-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(rgba(255,255,255,0.16) 0.7px, transparent 0.9px),
+    radial-gradient(rgba(0,0,0,0.14) 0.8px, transparent 1px),
+    radial-gradient(rgba(255,255,255,0.08) 0.5px, transparent 0.8px);
+
+  background-size:
+    10px 10px,
+    14px 14px,
+    22px 22px;
+
+  background-position:
+    0 0,
+    6px 4px,
+    3px 9px;
+
+  opacity: 0.7;
+}
+
+/* 中の要素を前面に出す */
+.pass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 文字まわり */
+.pass-card-top h2,
+.pass-card-name,
+.pass-card-brand,
+.pass-card-bottom,
+.pass-card-profile-text,
+.pass-card-meta,
+.pass-card-number {
+  color: #1f2224;
+}
+
+/* Pass の筆記体を少し映えさせる */
+.pass-script {
+  color: #2a2d2f;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.28);
+}
+
+/* バッジ */
+.pass-card-badge {
+  color: #1f2224;
+  border: 1px solid rgba(31, 34, 36, 0.45);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(3px);
+}
+
+/* 区切り線 */
+.pass-card-bottom {
+  border-top-color: rgba(31, 34, 36, 0.22);
+}
+
+/* アバターまわり */
+.pass-card-avatar {
+  background: rgba(255, 255, 255, 0.34);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+/* ARCH PASS：本物のコンクリート背景 */
+
+.pass-card {
+  background:
+    linear-gradient(
+      rgba(235, 235, 235, 0.18),
+      rgba(235, 235, 235, 0.18)
+    ),
+    url("/images/arch-concrete.jpg")
+      center / cover no-repeat !important;
+
+  background-color: #a9a9a7;
+  border: 1px solid #777;
+}
+
+/* 以前の人工的な粒や色ムラを消す */
+
+.pass-card::before,
+.pass-card::after {
+  content: none !important;
+}
+
+/* ARCH PASS：筆記体を確実に適用 */
+
+.pass-card-top h2 .pass-script {
+  font-family: "Allura", cursive !important;
+  font-size: 52px !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  line-height: 1;
+  display: inline-block;
+  margin-left: 6px;
 }
