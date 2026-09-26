@@ -1267,6 +1267,111 @@ const passCardMemberNumber =
   document.getElementById(
     "pass-card-member-number"
   );
+
+  // MY ARCH 活動履歴の表示先
+const myArchActivityList =
+  document.getElementById(
+    "my-arch-activity-list"
+  );
+  // MY ARCHの活動履歴をFirebaseから取得
+async function fetchMyArchActivities(user) {
+  if (!user) {
+    return [];
+  }
+
+  const activitiesSnapshot = await getDocs(
+    collection(db, "users", user.uid, "activities")
+  );
+
+  return activitiesSnapshot.docs.map((activityDoc) => ({
+    id: activityDoc.id,
+    ...activityDoc.data()
+  }));
+} // ← この括弧でfetchMyArchActivitiesを終了する
+
+// MY ARCHの活動履歴を画面に表示
+async function loadMyArchActivities(user) {
+  if (!user || !myArchActivityList) {
+    return;
+  }
+
+  myArchActivityList.textContent =
+    "活動履歴を読み込み中...";
+
+  try {
+    const activities =
+      await fetchMyArchActivities(user);
+console.log(
+  "MY ARCH 取得結果:",
+  activities.length,
+  activities
+);
+    myArchActivityList.replaceChildren();
+
+    // 活動履歴がない場合
+    if (activities.length === 0) {
+      const emptyMessage =
+        document.createElement("p");
+
+      emptyMessage.className =
+        "my-arch-empty";
+
+      emptyMessage.textContent =
+        "活動履歴はまだありません。";
+
+      myArchActivityList.appendChild(
+        emptyMessage
+      );
+
+      return;
+    }
+
+    // 活動履歴がある場合
+    activities.forEach((activity) => {
+      const card =
+        document.createElement("article");
+
+      card.className =
+        "my-arch-activity-card";
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "my-arch-activity-content";
+
+      const type =
+        document.createElement("p");
+
+      type.className =
+        "my-arch-activity-type";
+
+      type.textContent =
+        activity.type || "ACTIVITY";
+
+      const title =
+        document.createElement("h3");
+
+      title.textContent =
+        activity.title || "ARCHでの活動";
+
+      content.append(type, title);
+      card.appendChild(content);
+
+      myArchActivityList.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error(
+      "MY ARCHの読み込みエラー:",
+      error
+    );
+
+    myArchActivityList.textContent =
+      "活動履歴を読み込めませんでした。";
+  }
+}
+
   const profileAvatarInitial =
   document.getElementById(
     "profile-avatar-initial"
@@ -2912,6 +3017,28 @@ onAuthStateChanged(auth, async (user) => {
       await loadUserProfile(user);
       await loadMembers();
       await loadUserPortfolios(user);
+      onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    showArchApp();
+
+    try {
+      await loadUserProfile(user);
+      await loadMembers();
+      await loadUserPortfolios(user);
+
+      // MY ARCHの活動履歴を読み込む
+      await loadMyArchActivities(user);
+
+    } catch (error) {
+      console.error(
+        "プロフィールの読み込みに失敗しました:",
+        error
+      );
+    }
+  } else {
+    showAuthScreen();
+  }
+});
     } catch (error) {
       console.error(
         "プロフィールの読み込みに失敗しました:",
